@@ -1,5 +1,5 @@
 // functions/recipe-chat.js
-// Cloudflare Pages Function — context-aware recipe assistant via Claude
+// Cloudflare Pages Function — context-aware recipe assistant via Gemini Pro
 
 export async function onRequestPost(context) {
   const headers = {
@@ -14,9 +14,9 @@ export async function onRequestPost(context) {
     return new Response(JSON.stringify({ error: 'Invalid request body' }), { status: 400, headers });
   }
 
-  const ANTHROPIC_KEY = context.env.ANTHROPIC_API_KEY;
-  if (!ANTHROPIC_KEY) {
-    return new Response(JSON.stringify({ error: 'ANTHROPIC_API_KEY not configured' }), { status: 500, headers });
+  const GEMINI_KEY = context.env.GEMINI_API_KEY;
+  if (!GEMINI_KEY) {
+    return new Response(JSON.stringify({ error: 'GEMINI_API_KEY not configured' }), { status: 500, headers });
   }
 
   const ingredientList = (recipe.ingredients || [])
@@ -53,29 +53,36 @@ Your role is to help the user with this specific recipe. Be concise and practica
 
 Keep responses focused and practical. Use metric measurements. Do not use bullet points for simple answers — prose is fine for short responses. For lists of substitutions or steps, a short list is appropriate. Be warm but efficient.`;
 
+  // Convert message history to Gemini format
+  const geminiMessages = messages.map(m => ({
+    role: m.role === 'assistant' ? 'model' : 'user',
+    parts: [{ text: m.content }],
+  }));
+
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': ANTHROPIC_KEY,
-        'anthropic-version': '2023-06-01',
-      },
-      body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 600,
-        system: systemPrompt,
-        messages,
-      }),
-    });
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          system_instruction: { parts: [{ text: systemPrompt }] },
+          contents: geminiMessages,
+          generationConfig: {
+            maxOutputTokens: 600,
+            temperature: 0.7,
+          },
+        }),
+      }
+    );
 
     if (!res.ok) {
       const err = await res.text();
-      return new Response(JSON.stringify({ error: 'Claude API error', detail: err }), { status: 502, headers });
+      return new Response(JSON.stringify({ error: 'Gemini API error', detail: err }), { status: 502, headers });
     }
 
     const data = await res.json();
-    const reply = data.content?.[0]?.text || 'Sorry, I could not generate a response.';
+    const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Sorry, I could not generate a response.';
     return new Response(JSON.stringify({ reply }), { status: 200, headers });
 
   } catch (err) {
