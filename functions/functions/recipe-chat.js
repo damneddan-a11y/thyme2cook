@@ -65,14 +65,14 @@ Keep responses focused and practical. Use metric measurements. Do not use bullet
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          system_instruction: { parts: [{ text: systemPrompt }] },
-          contents: geminiMessages,
-          generationConfig: {
-            maxOutputTokens: 600,
-            temperature: 0.7,
-          },
-        }),
+body: JSON.stringify({
+  systemInstruction: { parts: [{ text: systemPrompt }] },
+  contents: geminiMessages,
+  generationConfig: {
+    maxOutputTokens: 600,
+    temperature: 0.7,
+  },
+}),
       }
     );
 
