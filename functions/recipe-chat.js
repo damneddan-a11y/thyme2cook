@@ -66,7 +66,10 @@ Keep responses focused and practical. Use metric measurements. Do not use bullet
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
 body: JSON.stringify({
-  systemInstruction: { parts: [{ text: systemPrompt }] },
+  systemInstruction: { 
+    role: "system", 
+    parts: [{ text: systemPrompt }] 
+  },
   contents: geminiMessages,
   generationConfig: {
     maxOutputTokens: 600,
