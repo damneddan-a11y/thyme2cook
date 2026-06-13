@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Thyme2Cook</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Syne:wght@400;500;600;700;800&family=Geist+Mono:wght@300;400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,700;1,9..144,300;1,9..144,400&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Syne:wght@400;500;600;700;800&family=Geist+Mono:wght@300;400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 
 <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
@@ -405,16 +405,32 @@ textarea.form-input { resize: vertical; min-height: 80px; }
   background: linear-gradient(to top, var(--surface) 0%, transparent 60%);
   pointer-events: none;
 }
+.hero-close {
+  position: absolute; top: 14px; right: 14px; z-index: 10;
+  width: 36px; height: 36px; border-radius: 10px;
+  background: rgba(10,10,10,0.5);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.9); font-size: 18px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; line-height: 1;
+  transition: all 0.15s !important;
+}
+.hero-close:hover { background: rgba(224,85,85,0.7); border-color: transparent; }
+[data-theme="light"] .hero-close {
+  background: rgba(44,31,20,0.45);
+  border-color: rgba(255,255,255,0.2);
+}
 .detail-body { padding: 0 20px; }
 .detail-kicker {
   font-family: 'Geist Mono', monospace; font-size: 10px;
   letter-spacing: 0.15em; color: var(--accent); text-transform: uppercase; margin-top: 16px;
 }
 .detail-title {
-  font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 800;
-  letter-spacing: -0.02em; line-height: 1.15; margin-top: 4px; color: var(--text);
+  font-family: 'Fraunces', serif; font-size: 26px; font-weight: 700;
+  font-style: italic; letter-spacing: -0.01em; line-height: 1.15; margin-top: 4px; color: var(--text);
 }
-[data-theme="light"] .detail-title { font-family: 'Playfair Display', serif; font-weight: 700; }
+[data-theme="light"] .detail-title { font-weight: 400; }
 
 .detail-stats {
   display: flex; margin-top: 14px;
@@ -422,7 +438,7 @@ textarea.form-input { resize: vertical; min-height: 80px; }
 }
 .detail-stat { flex: 1; padding: 10px 8px; text-align: center; border-right: 1px solid var(--border2); }
 .detail-stat:last-child { border-right: none; }
-.detail-stat-val { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 800; color: var(--accent); }
+.detail-stat-val { font-family: 'Fraunces', serif; font-size: 15px; font-weight: 300; font-style: italic; color: var(--accent); }
 .detail-stat-label { font-size: 9px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 2px; font-family: 'Geist Mono', monospace; }
 
 .servings-row {
@@ -1027,7 +1043,10 @@ function renderDetail(r) {
     : `<span style="font-size:80px">${r.emoji||'🍽'}</span>`;
 
   document.getElementById('detailContent').innerHTML = `
-    <div class="detail-hero">${hero}</div>
+    <div class="detail-hero">
+      ${hero}
+      <button class="hero-close" onclick="closeSheet('detailOverlay')">×</button>
+    </div>
     <div class="detail-body">
       <div class="detail-kicker">↳ ${r.source||'manual entry'}</div>
       <div class="detail-title">${r.title}</div>
