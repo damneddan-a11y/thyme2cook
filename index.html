@@ -441,11 +441,23 @@ textarea.form-input { resize: vertical; min-height: 80px; }
 .serv-btn:hover { background: var(--accent); color: var(--fab-text); border-color: var(--accent); }
 .serv-count { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 800; color: var(--accent); min-width: 24px; text-align: center; }
 
-.detail-section { margin-top: 20px; }
-.detail-section-title {
-  font-family: 'Geist Mono', monospace; font-size: 10px;
-  letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 10px;
+/* ── DETAIL TABS ── */
+.detail-tabs {
+  display: flex; margin-top: 16px;
+  border-bottom: 1px solid var(--border);
 }
+.detail-tab {
+  font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 8px 16px 12px; cursor: pointer;
+  color: var(--text-dim); border-bottom: 2px solid transparent;
+  margin-bottom: -1px; transition: all 0.15s !important;
+}
+.detail-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+.detail-tab-content { display: none; padding-top: 14px; }
+.detail-tab-content.active { display: block; }
+
+/* ── INGREDIENTS ── */
 .ingredient-list { display: flex; flex-direction: column; }
 .ingredient-row {
   display: flex; align-items: center; padding: 9px 0;
@@ -463,15 +475,53 @@ textarea.form-input { resize: vertical; min-height: 80px; }
 .ingredient-row.checked .ingredient-check { background: var(--accent); border-color: var(--accent); color: var(--fab-text); }
 .ingredient-name { flex: 1; font-size: 13px; color: var(--text); }
 .ingredient-amount { font-family: 'Geist Mono', monospace; font-size: 12px; color: var(--accent); white-space: nowrap; }
-.steps-list { display: flex; flex-direction: column; gap: 12px; }
-.step-row { display: flex; gap: 12px; align-items: flex-start; }
+
+/* ── METHOD STEPS ── */
+.steps-list { display: flex; flex-direction: column; gap: 8px; padding-bottom: 8px; }
+.step-item {
+  border: 1px solid var(--border); border-radius: 12px;
+  overflow: hidden; transition: all 0.2s !important;
+  cursor: pointer;
+}
+.step-item.done { opacity: 0.45; }
+.step-item.active-step { border-color: var(--accent-dim); }
+.step-header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 14px;
+}
 .step-num {
-  font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 800; color: var(--accent);
+  font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 800; color: var(--accent);
   width: 24px; height: 24px; border-radius: 6px;
   background: var(--accent-sub); border: 1px solid var(--tag-border);
-  display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  transition: all 0.15s !important;
 }
-.step-text { font-size: 13px; color: var(--text-mid); line-height: 1.6; flex: 1; }
+.step-item.done .step-num { background: var(--accent); color: var(--fab-text); border-color: var(--accent); content: '✓'; }
+.step-preview {
+  flex: 1; font-size: 12px; color: var(--text-mid);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.step-item.done .step-preview { text-decoration: line-through; color: var(--text-dim); }
+.step-chevron {
+  font-size: 11px; color: var(--text-dim); flex-shrink: 0;
+  transition: transform 0.2s !important;
+}
+.step-item.expanded .step-chevron { transform: rotate(180deg); }
+.step-body {
+  display: none; padding: 0 14px 14px 50px;
+  font-size: 13px; color: var(--text-mid); line-height: 1.65;
+}
+.step-item.expanded .step-body { display: block; }
+.step-item.active-step .step-body { display: block; }
+.step-done-btn {
+  margin-top: 10px; font-family: 'Syne', sans-serif;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.04em;
+  background: var(--accent-sub); color: var(--accent);
+  border: 1px solid var(--tag-border); border-radius: 8px;
+  padding: 5px 12px; cursor: pointer; transition: all 0.15s !important;
+}
+.step-done-btn:hover { background: var(--accent); color: var(--fab-text); border-color: var(--accent); }
+.step-item.done .step-done-btn { background: var(--surface2); color: var(--text-dim); border-color: var(--border); }
 
 .detail-actions { display: flex; gap: 8px; margin-top: 24px; padding-bottom: 20px; }
 .action-btn {
@@ -994,27 +1044,40 @@ function renderDetail(r) {
           <div class="serv-btn" onclick="changeServings('${r.id}',1)">+</div>
         </div>
       </div>
-      ${(r.ingredients||[]).length?`
-      <div class="detail-section">
-        <div class="detail-section-title">Ingredients</div>
-        <div class="ingredient-list">${r.ingredients.map((ing,i)=>`
+
+      <div class="detail-tabs">
+        <div class="detail-tab active" onclick="switchDetailTab('ingredients',this)">Ingredients</div>
+        <div class="detail-tab" onclick="switchDetailTab('method',this)">Method</div>
+      </div>
+
+      <div id="tab-ingredients" class="detail-tab-content active">
+        ${(r.ingredients||[]).length ? `<div class="ingredient-list">${r.ingredients.map((ing,i)=>`
           <div class="ingredient-row" id="ing_${r.id}_${i}" onclick="toggleIng('${r.id}',${i})">
             <div class="ingredient-check" id="chk_${r.id}_${i}"></div>
             <span class="ingredient-name">${ing.name}</span>
             <span class="ingredient-amount">${scale(ing.amount)}</span>
           </div>`).join('')}
-        </div>
-      </div>`:''}
-      ${(r.steps||[]).length?`
-      <div class="detail-section">
-        <div class="detail-section-title">Method</div>
-        <div class="steps-list">${r.steps.map((s,i)=>`
-          <div class="step-row">
-            <div class="step-num">${i+1}</div>
-            <div class="step-text">${s}</div>
+        </div>` : '<p style="color:var(--text-dim);font-size:13px;padding:8px 0">No ingredients listed.</p>'}
+      </div>
+
+      <div id="tab-method" class="detail-tab-content">
+        ${(r.steps||[]).length ? `<div class="steps-list">${r.steps.map((s,i)=>`
+          <div class="step-item${i===0?' expanded active-step':''}" id="step_${r.id}_${i}">
+            <div class="step-header" onclick="toggleStep('${r.id}',${i})">
+              <div class="step-num" id="stepnum_${r.id}_${i}">${i+1}</div>
+              <div class="step-preview">${s.slice(0,55)}${s.length>55?'…':''}</div>
+              <div class="step-chevron">▾</div>
+            </div>
+            <div class="step-body">
+              ${s}
+              <div style="margin-top:10px">
+                <button class="step-done-btn" onclick="markStepDone(event,'${r.id}',${i},${r.steps.length})">Mark done</button>
+              </div>
+            </div>
           </div>`).join('')}
-        </div>
-      </div>`:''}
+        </div>` : '<p style="color:var(--text-dim);font-size:13px;padding:8px 0">No method listed.</p>'}
+      </div>
+
       <div class="detail-actions">
         <button class="action-btn action-primary" onclick="startCook('${r.id}')">🍳 COOK MODE</button>
         <button class="action-btn action-chat" onclick="openChat('${r.id}')">💬 ASK AI</button>
@@ -1022,6 +1085,40 @@ function renderDetail(r) {
         <button class="action-btn action-secondary" style="flex:0.45" onclick="toggleFavDetail('${r.id}')">${r.favourite?'★':'☆'}</button>
       </div>
     </div>`;
+}
+
+function switchDetailTab(tab, el) {
+  document.querySelectorAll('.detail-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.detail-tab-content').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-' + tab).classList.add('active');
+}
+
+function toggleStep(rid, idx) {
+  const item = document.getElementById(`step_${rid}_${idx}`);
+  if (!item) return;
+  item.classList.toggle('expanded');
+}
+
+function markStepDone(e, rid, idx, total) {
+  e.stopPropagation();
+  const item = document.getElementById(`step_${rid}_${idx}`);
+  const num  = document.getElementById(`stepnum_${rid}_${idx}`);
+  const btn  = e.target;
+  if (!item) return;
+
+  const isDone = item.classList.toggle('done');
+  item.classList.remove('expanded', 'active-step');
+  num.textContent = isDone ? '✓' : idx + 1;
+  btn.textContent = isDone ? 'Undo' : 'Mark done';
+
+  // Auto-open next step if marking done
+  if (isDone && idx < total - 1) {
+    const next = document.getElementById(`step_${rid}_${idx + 1}`);
+    if (next && !next.classList.contains('done')) {
+      next.classList.add('expanded', 'active-step');
+    }
+  }
 }
 
 function changeServings(id, delta) {
