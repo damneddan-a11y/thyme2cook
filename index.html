@@ -757,7 +757,35 @@ textarea.form-input { resize: vertical; min-height: 80px; }
       <span class="btn-label">SAVE FROM URL</span>
     </button>
     <div class="divider"><div class="divider-line"></div><span>or</span><div class="divider-line"></div></div>
+    <button class="secondary-btn" onclick="openTextSheet()">Paste recipe text</button>
     <button class="secondary-btn" onclick="openManualSheet()">Enter manually</button>
+  </div>
+</div>
+
+<!-- PASTE TEXT SHEET -->
+<div class="overlay" id="textOverlay" onclick="handleOverlayClick(event,'textOverlay')">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-header">
+      <div class="sheet-title">Paste Recipe Text</div>
+      <div class="close-btn" onclick="closeSheet('textOverlay')">×</div>
+    </div>
+    <div class="form-group" style="padding-top:16px">
+      <label class="form-label">Paste any recipe text</label>
+      <textarea class="form-input" id="rawRecipeText" placeholder="Paste a recipe from anywhere — a website, a screenshot transcription, a message from a friend, handwritten notes. The AI will tidy it into a proper recipe." rows="10"></textarea>
+    </div>
+    <div class="url-examples">
+      <p>Works well with</p>
+      <div class="url-example-row">
+        <span class="url-example">Copied web text</span>
+        <span class="url-example">Screenshot OCR</span>
+        <span class="url-example">WhatsApp messages</span>
+        <span class="url-example">Handwritten notes</span>
+      </div>
+    </div>
+    <button class="submit-btn" id="parseTextBtn" onclick="saveFromText()">
+      <span class="btn-label">✨ FORMAT WITH AI</span>
+    </button>
   </div>
 </div>
 
@@ -985,6 +1013,33 @@ async function saveFromUrl() {
     showToast(`"${data.title}" saved`,'success');
   } catch(err) {
     showToast(err.message||'Error fetching recipe','error');
+  } finally {
+    btn.classList.remove('loading'); btn.disabled=false; hideLoading();
+  }
+}
+
+// ── PASTE TEXT ─────────────────────────────────────────────────────────────
+function openTextSheet() {
+  closeSheet('addOverlay');
+  setTimeout(()=>document.getElementById('textOverlay').classList.add('open'),200);
+}
+
+async function saveFromText() {
+  const text = document.getElementById('rawRecipeText').value.trim();
+  if (!text) { showToast('Paste some recipe text first','error'); return; }
+  const btn = document.getElementById('parseTextBtn');
+  btn.classList.add('loading'); btn.disabled = true;
+  showLoading('Formatting recipe…');
+  try {
+    const res  = await fetch('/parse-recipe-text',{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({text}) });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error||'Could not format recipe');
+    await dbAdd(data);
+    closeSheet('textOverlay');
+    document.getElementById('rawRecipeText').value = '';
+    showToast(`"${data.title}" saved`,'success');
+  } catch(err) {
+    showToast(err.message||'Error formatting recipe','error');
   } finally {
     btn.classList.remove('loading'); btn.disabled=false; hideLoading();
   }
