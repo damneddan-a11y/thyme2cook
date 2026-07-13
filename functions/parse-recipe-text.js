@@ -1,5 +1,5 @@
 // functions/parse-recipe-text.js
-// Cloudflare Pages Function — turns pasted/raw recipe text into structured recipe JSON via Gemini
+// Cloudflare Pages Function — turns pasted recipe text into structured JSON via Gemini
 
 export async function onRequestPost(context) {
   const headers = {
@@ -23,32 +23,31 @@ export async function onRequestPost(context) {
     return new Response(JSON.stringify({ error: 'GEMINI_API_KEY not configured' }), { status: 500, headers });
   }
 
-  const prompt = `You are a recipe digitisation assistant. The user has pasted raw recipe text below (it might be messy, copied from a website, a screenshot transcription, a handwritten note, or a forwarded message). Extract a clean, structured recipe from it.
+  const prompt = `You are a recipe digitisation assistant. The user has pasted raw recipe text below. Extract a clean structured recipe from it.
 
 Rules:
-- Use metric units (g, kg, ml, l, tsp, tbsp). If the source uses imperial/US units, convert to metric and round sensibly.
-- "title" should be a short, clean recipe name.
-- "prepTime" and "cookTime" should be short strings like "15 min" or "1 hr 30 min". Use null if genuinely not stated or inferable.
-- "servings" should be a number. Default to 4 if not stated.
-- "ingredients" is an array of objects: { "amount": "200g", "name": "plain flour" }. The amount field can be an empty string if there's genuinely no quantity (e.g. "salt, to taste").
-- "steps" is an array of strings, one per method step, written as clear instructions in the same language as the source.
-- "categories" is an array using only these allowed values where applicable: "quick" (30 min or less total), "vegetarian", "baking", "weekend" (90+ min total). Include zero, one, or more as appropriate. Use an empty array if none apply.
-- "emoji" should be a single emoji that best represents the dish.
-- "description" is a one sentence summary, or null.
-- Do not invent ingredients or steps that are not implied by the text. If the text is not a recipe at all, still do your best to structure whatever cooking information is present.
+- Use metric units (g, kg, ml, l, tsp, tbsp). Convert imperial/US units to metric.
+- "title": short clean recipe name.
+- "prepTime" and "cookTime": strings like "15 min" or "1 hr 30 min", or null if unknown.
+- "servings": a number, default 4 if not stated.
+- "ingredients": array of { "amount": "200g", "name": "plain flour" }. Amount can be empty string if no quantity given.
+- "steps": array of strings, one clear instruction per step.
+- "categories": array using only these values where applicable: "quick" (30 min or less total), "vegetarian", "baking", "weekend" (90+ min total). Empty array if none apply.
+- "emoji": single emoji representing the dish.
+- "description": one sentence summary or null.
 
-Return ONLY valid JSON matching this exact shape, with no markdown formatting, no code fences, and no commentary:
+Return ONLY a raw JSON object. No markdown, no code fences, no explanation. Start your response with { and end with }.
 
 {
-  "title": string,
-  "description": string | null,
-  "prepTime": string | null,
-  "cookTime": string | null,
-  "servings": number,
-  "categories": string[],
-  "ingredients": [{ "amount": string, "name": string }],
-  "steps": string[],
-  "emoji": string
+  "title": "",
+  "description": null,
+  "prepTime": null,
+  "cookTime": null,
+  "servings": 4,
+  "categories": [],
+  "ingredients": [{ "amount": "", "name": "" }],
+  "steps": [],
+  "emoji": "🍽"
 }
 
 RECIPE TEXT:
@@ -65,8 +64,8 @@ ${text}
         body: JSON.stringify({
           contents: [{ role: 'user', parts: [{ text: prompt }] }],
           generationConfig: {
-            temperature: 0.3,
-            responseMimeType: 'application/json',
+            temperature: 0.2,
+            maxOutputTokens: 2048,
           },
         }),
       }
@@ -84,11 +83,23 @@ ${text}
       return new Response(JSON.stringify({ error: 'Gemini returned no content' }), { status: 502, headers });
     }
 
+    // Strip any accidental markdown fences and find the JSON object
+    const cleaned = raw
+      .replace(/```json\n?/gi, '')
+      .replace(/```\n?/g, '')
+      .trim();
+
+    // Extract just the JSON object in case there's any preamble
+    const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      return new Response(JSON.stringify({ error: 'Could not find JSON in AI response' }), { status: 502, headers });
+    }
+
     let parsed;
     try {
-      parsed = JSON.parse(raw);
+      parsed = JSON.parse(jsonMatch[0]);
     } catch {
-      return new Response(JSON.stringify({ error: 'Could not parse the AI response into a recipe' }), { status: 502, headers });
+      return new Response(JSON.stringify({ error: 'Could not parse AI response into a recipe' }), { status: 502, headers });
     }
 
     const recipe = {
