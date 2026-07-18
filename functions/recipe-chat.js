@@ -1,5 +1,5 @@
 // functions/recipe-chat.js
-// Cloudflare Pages Function — context-aware recipe assistant via Gemini Pro
+// Cloudflare Pages Function — context-aware recipe assistant via Gemini
 
 export async function onRequestPost(context) {
   const headers = {
@@ -50,10 +50,10 @@ Your role is to help the user with this specific recipe. Be concise and practica
 - Storage and make-ahead advice
 - Wine or side dish pairings
 - Equipment alternatives
+- Rough nutritional estimates, including calories per serving, when asked. This is a normal, expected feature of this app. Base the estimate on standard nutritional values for the listed ingredients and quantities, divide by the stated servings, and present it as an approximate figure (e.g. "roughly 450 kcal per serving"). Always caveat that it's an estimate, not a substitute for a proper nutritional analysis, but do provide the number.
 
 Keep responses focused and practical. Use metric measurements. Do not use bullet points for simple answers — prose is fine for short responses. For lists of substitutions or steps, a short list is appropriate. Be warm but efficient.`;
 
-  // Convert message history to Gemini format
   const geminiMessages = messages.map(m => ({
     role: m.role === 'assistant' ? 'model' : 'user',
     parts: [{ text: m.content }],
@@ -65,17 +65,23 @@ Keep responses focused and practical. Use metric measurements. Do not use bullet
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-body: JSON.stringify({
-  systemInstruction: { 
-    role: "system", 
-    parts: [{ text: systemPrompt }] 
-  },
-  contents: geminiMessages,
-  generationConfig: {
-    maxOutputTokens: 600,
-    temperature: 0.7,
-  },
-}),
+        body: JSON.stringify({
+          systemInstruction: {
+            role: 'system',
+            parts: [{ text: systemPrompt }],
+          },
+          contents: geminiMessages,
+          generationConfig: {
+            maxOutputTokens: 700,
+            temperature: 0.7,
+          },
+          safetySettings: [
+            { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_ONLY_HIGH' },
+            { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_ONLY_HIGH' },
+            { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_ONLY_HIGH' },
+            { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_ONLY_HIGH' },
+          ],
+        }),
       }
     );
 
@@ -85,7 +91,14 @@ body: JSON.stringify({
     }
 
     const data = await res.json();
-    const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Sorry, I could not generate a response.';
+    const candidate = data.candidates?.[0];
+
+    if (!candidate) {
+      const blockReason = data.promptFeedback?.blockReason || 'unknown';
+      return new Response(JSON.stringify({ error: `Response blocked: ${blockReason}` }), { status: 502, headers });
+    }
+
+    const reply = candidate.content?.parts?.[0]?.text || 'Sorry, I could not generate a response.';
     return new Response(JSON.stringify({ reply }), { status: 200, headers });
 
   } catch (err) {
