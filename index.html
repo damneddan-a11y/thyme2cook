@@ -536,10 +536,29 @@ textarea.form-input { resize: vertical; min-height: 80px; }
 .ingredient-row.checked { opacity: 0.4; }
 .ingredient-row.ing-flash { background: var(--accent-sub); border-radius: 8px; }
 .ing-link {
+  position: relative;
   color: var(--accent); font-weight: 600; cursor: pointer;
   border-bottom: 1px dotted var(--accent-dim);
 }
 .ing-link:hover { border-bottom-style: solid; }
+.ing-tip {
+  position: absolute; left: 50%; bottom: 100%;
+  transform: translateX(-50%) translateY(-6px);
+  background: var(--accent); color: var(--fab-text);
+  font-family: 'Geist Mono', monospace; font-size: 10px; font-weight: 700;
+  padding: 4px 8px; border-radius: 6px; white-space: nowrap;
+  z-index: 20; pointer-events: none;
+  animation: tipPop 0.15s ease;
+}
+.ing-tip::after {
+  content: ''; position: absolute; top: 100%; left: 50%;
+  transform: translateX(-50%);
+  border: 4px solid transparent; border-top-color: var(--accent);
+}
+@keyframes tipPop {
+  from { opacity: 0; transform: translateX(-50%) translateY(0); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(-6px); }
+}
 .ingredient-check {
   width: 18px; height: 18px; border-radius: 5px;
   border: 1.5px solid var(--border2); flex-shrink: 0;
@@ -1359,18 +1378,20 @@ function openDetail(id) {
   document.getElementById('detailOverlay').classList.add('open');
 }
 
+function scaleAmount(amt, ratio) {
+  if (!amt) return '';
+  return String(amt).replace(/([\d.½¼¾]+)/g, m => {
+    const fracs={'½':0.5,'¼':0.25,'¾':0.75};
+    const n = fracs[m]!==undefined ? fracs[m] : parseFloat(m);
+    if (isNaN(n)) return m;
+    return (Math.round(n*ratio*10)/10).toString();
+  });
+}
+
 function renderDetail(r) {
   const sv    = currentServings[r.id]||r.servings||4;
   const ratio = sv/(r.servings||4);
-  function scale(amt) {
-    if (!amt) return '';
-    return String(amt).replace(/([\d.½¼¾]+)/g, m => {
-      const fracs={'½':0.5,'¼':0.25,'¾':0.75};
-      const n = fracs[m]!==undefined ? fracs[m] : parseFloat(m);
-      if (isNaN(n)) return m;
-      return (Math.round(n*ratio*10)/10).toString();
-    });
-  }
+  function scale(amt) { return scaleAmount(amt, ratio); }
   const hero = r.image
     ? `<img src="${r.image}" alt="${r.title}" onerror="this.parentNode.innerHTML='<span style=font-size:80px>${r.emoji||'🍽'}</span>'" />`
     : `<span style="font-size:80px">${r.emoji||'🍽'}</span>`;
@@ -1464,14 +1485,22 @@ function linkIngredients(text, ingredients, rid) {
 
 function highlightIngredient(e, rid, idx) {
   e.stopPropagation();
-  document.querySelector(`.detail-tab[onclick*="ingredients"]`)?.click();
-  setTimeout(() => {
-    const row = document.getElementById(`ing_${rid}_${idx}`);
-    if (!row) return;
-    row.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    row.classList.add('ing-flash');
-    setTimeout(() => row.classList.remove('ing-flash'), 1200);
-  }, 50);
+  const r = recipes.find(x => x.id === rid); if (!r) return;
+  const ing = (r.ingredients||[])[idx]; if (!ing) return;
+  const sv    = currentServings[rid] || r.servings || 4;
+  const ratio = sv / (r.servings || 4);
+  const amt   = scaleAmount(ing.amount, ratio);
+  showIngredientTip(e.currentTarget, [amt, ing.name].filter(Boolean).join(' '));
+}
+
+function showIngredientTip(target, label) {
+  document.querySelectorAll('.ing-tip').forEach(t => t.remove());
+  if (!label) return;
+  const tip = document.createElement('span');
+  tip.className = 'ing-tip';
+  tip.textContent = label;
+  target.appendChild(tip);
+  setTimeout(() => tip.remove(), 1800);
 }
 
 function switchDetailTab(tab, el) {
