@@ -10,7 +10,7 @@
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
   import {
     getFirestore, collection, addDoc, deleteDoc,
-    doc, setDoc, updateDoc, query, orderBy, onSnapshot, getDoc
+    doc, setDoc, updateDoc, query, orderBy, onSnapshot, getDoc, arrayUnion
   } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
   import {
     getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged
@@ -42,6 +42,7 @@
   window._setDoc      = setDoc;
   window._getDoc       = getDoc;
   window._updateDoc   = updateDoc;
+  window._arrayUnion   = arrayUnion;
   window._query        = query;
   window._orderBy      = orderBy;
   window._onSnapshot   = onSnapshot;
@@ -778,6 +779,7 @@ textarea.form-input { resize: vertical; min-height: 80px; }
 .planner-days-label { font-family: 'Geist Mono', monospace; font-size: 10px; letter-spacing: 0.1em; color: var(--text-dim); text-transform: uppercase; flex: 1; }
 .planner-days-val { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 800; color: var(--accent); min-width: 60px; text-align: center; }
 .planner-body { flex: 1; overflow-y: auto; padding: 4px 20px 40px; }
+.planner-footer { flex-shrink: 0; padding: 12px 20px 20px; border-top: 1px solid var(--border); background: var(--bg); }
 .planner-day-card { padding: 14px 0; border-bottom: 1px solid var(--border); }
 .planner-day-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 8px; }
 .planner-day-date { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 800; color: var(--text); }
@@ -821,6 +823,7 @@ textarea.form-input { resize: vertical; min-height: 80px; }
 .leftover-name { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; color: var(--text); }
 .leftover-match { font-family: 'Geist Mono', monospace; font-size: 10px; color: var(--accent-dim); }
 .picker-search { padding: 14px 20px 0; }
+#pickerOverlay { z-index: 450; }
 .picker-list { padding: 8px 20px 30px; max-height: 60vh; overflow-y: auto; }
 .picker-row { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--border); cursor: pointer; }
 .picker-row:hover .picker-row-title { color: var(--accent); }
@@ -863,6 +866,37 @@ textarea.form-input { resize: vertical; min-height: 80px; }
   </div>
 </div>
 
+<div class="auth-gate" id="onboardGate" style="display:none">
+  <div class="auth-gate-inner">
+    <div class="logo" style="font-size:28px;margin-bottom:6px">Welcome</div>
+    <p class="auth-gate-sub">Is this your first time here, or is someone already cooking with Thyme2Cook?</p>
+    <button class="submit-btn" style="margin:24px 0 0;max-width:280px" onclick="startOwnHousehold()">
+      <span class="btn-label">START MY OWN KITCHEN</span>
+    </button>
+    <div class="divider" style="margin:14px 0 0;max-width:280px;margin-left:auto;margin-right:auto"><div class="divider-line"></div><span>or</span><div class="divider-line"></div></div>
+    <input class="form-input" type="text" placeholder="Enter invite code" id="inviteCodeInput" style="margin-top:14px;max-width:280px;text-align:center;text-transform:uppercase;letter-spacing:0.1em" maxlength="6" />
+    <button class="secondary-btn" style="margin:10px 0 0;max-width:280px" onclick="joinHousehold()">
+      <span class="btn-label">JOIN WITH CODE</span>
+    </button>
+  </div>
+</div>
+
+<!-- INVITE SHEET -->
+<div class="overlay" id="inviteOverlay" onclick="handleOverlayClick(event,'inviteOverlay')">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-header">
+      <div class="sheet-title">Invite to your kitchen</div>
+      <div class="close-btn" onclick="closeSheet('inviteOverlay')">×</div>
+    </div>
+    <div class="form-group" style="padding-top:16px">
+      <p style="font-size:13px;color:var(--text-mid);line-height:1.5">Share this code with your partner. When they sign in with their own Google account and enter it, they'll see and edit the same recipes and planner as you.</p>
+      <div style="margin-top:18px;text-align:center;font-family:'Geist Mono',monospace;font-size:32px;font-weight:700;letter-spacing:0.15em;color:var(--accent);background:var(--surface2);border:1px solid var(--border2);border-radius:12px;padding:18px" id="inviteCodeDisplay">------</div>
+    </div>
+    <button class="submit-btn" onclick="copyInviteCode()"><span class="btn-label">COPY CODE</span></button>
+  </div>
+</div>
+
 <div class="app" id="app" style="display:none">
   <div class="topbar">
     <div class="logo">Thyme<span class="dot">2</span>Cook</div>
@@ -873,6 +907,7 @@ textarea.form-input { resize: vertical; min-height: 80px; }
       <div class="account-btn" id="accountBtn" onclick="toggleAccountMenu()" title="Account">?</div>
       <div class="account-menu" id="accountMenu">
         <div class="account-menu-email" id="accountEmail"></div>
+        <div class="account-menu-item" onclick="openInvite()">Invite partner</div>
         <div class="account-menu-item" onclick="doSignOut()">Sign out</div>
       </div>
     </div>
@@ -1077,6 +1112,9 @@ textarea.form-input { resize: vertical; min-height: 80px; }
     <div class="serv-btn" onclick="changePlannerDays(1)">+</div>
   </div>
   <div class="planner-body" id="plannerBody"></div>
+  <div class="planner-footer">
+    <button class="secondary-btn" style="margin:0;width:100%" onclick="resetPlanner()">Reset all</button>
+  </div>
 </div>
 
 <!-- RECIPE PICKER (for planner) -->
@@ -1140,27 +1178,76 @@ document.addEventListener('click', e => {
 });
 
 let unsubscribeRecipes = null, unsubscribePlanner = null;
+let householdId = null;
 
-window.addEventListener('auth-changed', e => {
+window.addEventListener('auth-changed', async e => {
   const user = e.detail.user;
   currentUser = user;
   dbReady = false;
+  householdId = null;
   if (unsubscribeRecipes) { unsubscribeRecipes(); unsubscribeRecipes = null; }
   if (unsubscribePlanner) { unsubscribePlanner(); unsubscribePlanner = null; }
 
   if (!user) {
     document.getElementById('authGate').style.display = 'flex';
+    document.getElementById('onboardGate').style.display = 'none';
     document.getElementById('app').style.display = 'none';
     recipes = [];
     return;
   }
 
   document.getElementById('authGate').style.display = 'none';
+
+  // resolve which household this account belongs to
+  try {
+    const memRef  = window._doc(window._db, 'memberships', user.uid);
+    const memSnap = await window._getDoc(memRef);
+    if (memSnap.exists()) {
+      householdId = memSnap.data().householdId;
+      enterApp();
+    } else {
+      document.getElementById('app').style.display = 'none';
+      document.getElementById('onboardGate').style.display = 'flex';
+    }
+  } catch (err) {
+    showToast('Could not check your account, try reloading', 'error');
+  }
+});
+
+async function startOwnHousehold() {
+  const hid = currentUser.uid;
+  await window._setDoc(window._doc(window._db, 'households', hid), { members: [currentUser.uid], ownerUid: currentUser.uid, createdAt: Date.now() });
+  await window._setDoc(window._doc(window._db, 'memberships', currentUser.uid), { householdId: hid });
+  householdId = hid;
+  document.getElementById('onboardGate').style.display = 'none';
+  enterApp();
+}
+
+async function joinHousehold() {
+  const code = document.getElementById('inviteCodeInput').value.trim().toUpperCase();
+  if (!code) { showToast('Enter an invite code', 'error'); return; }
+  try {
+    const inviteRef  = window._doc(window._db, 'invites', code);
+    const inviteSnap = await window._getDoc(inviteRef);
+    if (!inviteSnap.exists()) { showToast('Invite code not found', 'error'); return; }
+    const hid = inviteSnap.data().householdId;
+    await window._updateDoc(window._doc(window._db, 'households', hid), { members: window._arrayUnion(currentUser.uid) });
+    await window._setDoc(window._doc(window._db, 'memberships', currentUser.uid), { householdId: hid });
+    householdId = hid;
+    document.getElementById('onboardGate').style.display = 'none';
+    enterApp();
+  } catch (err) {
+    showToast('Could not join, check the code and try again', 'error');
+  }
+}
+
+function enterApp() {
+  document.getElementById('onboardGate').style.display = 'none';
   document.getElementById('app').style.display = 'flex';
-  document.getElementById('accountEmail').textContent = user.email || '';
-  const initial = (user.displayName || user.email || '?').trim().charAt(0).toUpperCase();
-  document.getElementById('accountBtn').innerHTML = user.photoURL
-    ? `<img src="${user.photoURL}" alt="" />`
+  document.getElementById('accountEmail').textContent = currentUser.email || '';
+  const initial = (currentUser.displayName || currentUser.email || '?').trim().charAt(0).toUpperCase();
+  document.getElementById('accountBtn').innerHTML = currentUser.photoURL
+    ? `<img src="${currentUser.photoURL}" alt="" />`
     : initial;
 
   dbReady = true;
@@ -1170,18 +1257,43 @@ window.addEventListener('auth-changed', e => {
     renderList();
   });
 
-  const pDoc = window._doc(window._db, 'users', currentUser.uid, 'meta', 'planner');
+  const pDoc = window._doc(window._db, 'households', householdId, 'meta', 'planner');
   unsubscribePlanner = window._onSnapshot(pDoc, snap => {
     plannerData = snap.exists() ? { days: 7, entries: {}, ...snap.data() } : { days: 7, entries: {} };
     renderPlanner();
   });
-});
+}
 
-function recipesCol() { return window._collection(window._db, 'users', currentUser.uid, 'recipes'); }
+// ── INVITE ─────────────────────────────────────────────────────────────────
+function randomInviteCode(len = 6) {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // no ambiguous characters
+  let s = '';
+  for (let i = 0; i < len; i++) s += chars[Math.floor(Math.random() * chars.length)];
+  return s;
+}
+async function openInvite() {
+  toggleAccountMenu(false);
+  const code = randomInviteCode();
+  try {
+    await window._setDoc(window._doc(window._db, 'invites', code), { householdId, createdAt: Date.now(), createdBy: currentUser.uid });
+    document.getElementById('inviteCodeDisplay').textContent = code;
+    document.getElementById('inviteOverlay').classList.add('open');
+  } catch (err) {
+    showToast('Could not create invite code', 'error');
+  }
+}
+function copyInviteCode() {
+  const code = document.getElementById('inviteCodeDisplay').textContent;
+  navigator.clipboard.writeText(code)
+    .then(() => showToast('Code copied', 'success'))
+    .catch(() => showToast('Could not copy — note it down manually', 'error'));
+}
+
+function recipesCol() { return window._collection(window._db, 'households', householdId, 'recipes'); }
 
 async function dbAdd(data)      { return window._addDoc(recipesCol(), data); }
-async function dbUpdate(id,data){ return window._updateDoc(window._doc(window._db,'users',currentUser.uid,'recipes',id), data); }
-async function dbDelete(id)     { return window._deleteDoc(window._doc(window._db,'users',currentUser.uid,'recipes',id)); }
+async function dbUpdate(id,data){ return window._updateDoc(window._doc(window._db,'households',householdId,'recipes',id), data); }
+async function dbDelete(id)     { return window._deleteDoc(window._doc(window._db,'households',householdId,'recipes',id)); }
 
 // ── RENDER ─────────────────────────────────────────────────────────────────
 function getFiltered() {
@@ -1312,7 +1424,7 @@ async function saveFromText() {
 
 // ── PHOTO UPLOAD ───────────────────────────────────────────────────────────
 async function uploadPhotoFile(file, recipeId) {
-  const path = `users/${currentUser.uid}/recipes/${recipeId}-${Date.now()}-${file.name}`;
+  const path = `households/${householdId}/recipes/${recipeId}-${Date.now()}-${file.name}`;
   const r = window._storageRef(window._storage, path);
   const snap = await window._uploadBytes(r, file);
   return window._getDownloadURL(snap.ref);
@@ -1682,8 +1794,8 @@ async function changePlannerDays(delta) {
 }
 
 async function savePlanner() {
-  if (!currentUser) return;
-  const pDoc = window._doc(window._db, 'users', currentUser.uid, 'meta', 'planner');
+  if (!currentUser || !householdId) return;
+  const pDoc = window._doc(window._db, 'households', householdId, 'meta', 'planner');
   await window._setDoc(pDoc, plannerData, { merge: false });
 }
 
@@ -1701,7 +1813,7 @@ function renderPlanner() {
       return `<div class="planner-entry${entry.done?' done':''}">
         <div class="planner-entry-check" onclick="togglePlannerDone('${key}',${ei})">${entry.done?'✓':''}</div>
         <div class="planner-entry-title" onclick="${r?`closePlanner();openDetail('${r.id}')`:''}">${title}</div>
-        <div class="planner-entry-remove" onclick="removePlannerEntry('${key}',${ei})">×</div>
+        <div class="planner-entry-remove" onclick="removePlannerEntry('${key}',${ei})" title="Remove from plan">🗑</div>
       </div>`;
     }).join('');
     return `<div class="planner-day-card">
@@ -1757,6 +1869,13 @@ async function togglePlannerDone(key, idx) {
   arr[idx].done = !arr[idx].done;
   await savePlanner();
   renderPlanner();
+}
+async function resetPlanner() {
+  if (!confirm('Clear every recipe from the planner? This cannot be undone.')) return;
+  plannerData.entries = {};
+  await savePlanner();
+  renderPlanner();
+  showToast('Planner cleared');
 }
 
 // leftover ingredient based recommendations, drawn from recipes ticked off in the current planner window
