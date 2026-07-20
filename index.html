@@ -10,7 +10,7 @@
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
   import {
     getFirestore, collection, addDoc, deleteDoc,
-    doc, setDoc, updateDoc, query, orderBy, onSnapshot, getDoc, arrayUnion
+    doc, setDoc, updateDoc, query, orderBy, onSnapshot, getDoc, getDocs, arrayUnion, arrayRemove
   } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
   import {
     getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged
@@ -41,8 +41,10 @@
   window._doc         = doc;
   window._setDoc      = setDoc;
   window._getDoc       = getDoc;
+  window._getDocs      = getDocs;
   window._updateDoc   = updateDoc;
   window._arrayUnion   = arrayUnion;
+  window._arrayRemove  = arrayRemove;
   window._query        = query;
   window._orderBy      = orderBy;
   window._onSnapshot   = onSnapshot;
@@ -828,6 +830,26 @@ textarea.form-input { resize: vertical; min-height: 80px; }
 .picker-row { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--border); cursor: pointer; }
 .picker-row:hover .picker-row-title { color: var(--accent); }
 .picker-row-title { font-size: 13px; font-weight: 600; color: var(--text); }
+.member-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.member-row:last-child { border-bottom: none; }
+.member-avatar {
+  width: 36px; height: 36px; border-radius: 50%; background: var(--accent); color: var(--fab-text);
+  font-family: 'Syne', sans-serif; font-weight: 800; font-size: 13px;
+  display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0;
+}
+.member-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.member-info { flex: 1; min-width: 0; }
+.member-name { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; color: var(--text); }
+.member-email { font-size: 11px; color: var(--text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.member-tag {
+  font-family: 'Geist Mono', monospace; font-size: 9px; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--accent-dim); background: var(--accent-sub); border: 1px solid var(--tag-border);
+  border-radius: 4px; padding: 2px 6px; flex-shrink: 0;
+}
+.member-remove {
+  color: var(--text-dim); cursor: pointer; font-size: 16px; padding: 4px; flex-shrink: 0;
+}
+.member-remove:hover { color: var(--red); }
 
 /* ── DESKTOP / WIDE BROWSER ── */
 @media (min-width: 900px) {
@@ -897,6 +919,19 @@ textarea.form-input { resize: vertical; min-height: 80px; }
   </div>
 </div>
 
+<!-- MEMBERS SHEET -->
+<div class="overlay" id="membersOverlay" onclick="handleOverlayClick(event,'membersOverlay')">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-header">
+      <div class="sheet-title">Household members</div>
+      <div class="close-btn" onclick="closeSheet('membersOverlay')">×</div>
+    </div>
+    <div class="picker-list" id="membersList" style="padding-top:16px"></div>
+    <button class="secondary-btn" onclick="closeSheet('membersOverlay');openInvite()">+ Invite someone else</button>
+  </div>
+</div>
+
 <div class="app" id="app" style="display:none">
   <div class="topbar">
     <div class="logo">Thyme<span class="dot">2</span>Cook</div>
@@ -907,6 +942,7 @@ textarea.form-input { resize: vertical; min-height: 80px; }
       <div class="account-btn" id="accountBtn" onclick="toggleAccountMenu()" title="Account">?</div>
       <div class="account-menu" id="accountMenu">
         <div class="account-menu-email" id="accountEmail"></div>
+        <div class="account-menu-item" onclick="openMembers()">Manage household</div>
         <div class="account-menu-item" onclick="openInvite()">Invite partner</div>
         <div class="account-menu-item" onclick="doSignOut()">Sign out</div>
       </div>
@@ -1262,6 +1298,15 @@ function enterApp() {
     plannerData = snap.exists() ? { days: 7, entries: {}, ...snap.data() } : { days: 7, entries: {} };
     renderPlanner();
   });
+
+  // keep a readable profile so other household members can see who's who
+  const profileRef = window._doc(window._db, 'households', householdId, 'profiles', currentUser.uid);
+  window._setDoc(profileRef, {
+    email: currentUser.email || '',
+    displayName: currentUser.displayName || '',
+    photoURL: currentUser.photoURL || '',
+    lastSeen: Date.now(),
+  }, { merge: true }).catch(() => {});
 }
 
 // ── INVITE ─────────────────────────────────────────────────────────────────
@@ -1287,6 +1332,61 @@ function copyInviteCode() {
   navigator.clipboard.writeText(code)
     .then(() => showToast('Code copied', 'success'))
     .catch(() => showToast('Could not copy — note it down manually', 'error'));
+}
+
+// ── MEMBERS ────────────────────────────────────────────────────────────────
+async function openMembers() {
+  toggleAccountMenu(false);
+  document.getElementById('membersOverlay').classList.add('open');
+  document.getElementById('membersList').innerHTML = '<p style="color:var(--text-dim);font-size:13px;padding:8px 0">Loading…</p>';
+  try {
+    await renderMembers();
+  } catch (err) {
+    document.getElementById('membersList').innerHTML = '<p style="color:var(--text-dim);font-size:13px;padding:8px 0">Could not load members.</p>';
+  }
+}
+
+async function renderMembers() {
+  const hSnap = await window._getDoc(window._doc(window._db, 'households', householdId));
+  const memberUids = (hSnap.exists() ? hSnap.data().members : [currentUser.uid]) || [currentUser.uid];
+  const ownerUid = hSnap.exists() ? hSnap.data().ownerUid : currentUser.uid;
+
+  const profilesSnap = await window._getDocs(window._collection(window._db, 'households', householdId, 'profiles'));
+  const profiles = {};
+  profilesSnap.forEach(d => { profiles[d.id] = d.data(); });
+
+  const el = document.getElementById('membersList');
+  el.innerHTML = memberUids.map(uid => {
+    const p = profiles[uid] || {};
+    const isYou   = uid === currentUser.uid;
+    const isOwner = uid === ownerUid;
+    const name  = p.displayName || p.email || 'Household member';
+    const avatar = p.photoURL
+      ? `<img src="${p.photoURL}" alt="" />`
+      : (name.trim().charAt(0).toUpperCase() || '?');
+    return `<div class="member-row">
+      <div class="member-avatar">${avatar}</div>
+      <div class="member-info">
+        <div class="member-name">${name}${isYou ? ' (you)' : ''}</div>
+        ${p.email ? `<div class="member-email">${p.email}</div>` : ''}
+      </div>
+      ${isOwner ? '<span class="member-tag">Owner</span>' : ''}
+      ${!isYou ? `<span class="member-remove" onclick="removeMember('${uid}','${name.replace(/'/g,"")}')" title="Remove">🗑</span>` : ''}
+    </div>`;
+  }).join('');
+}
+
+async function removeMember(uid, name) {
+  if (!confirm(`Remove ${name} from this household? They'll lose access to all shared recipes and the planner.`)) return;
+  try {
+    await window._updateDoc(window._doc(window._db, 'households', householdId), { members: window._arrayRemove(uid) });
+    await window._deleteDoc(window._doc(window._db, 'memberships', uid));
+    await window._deleteDoc(window._doc(window._db, 'households', householdId, 'profiles', uid));
+    showToast('Member removed', 'success');
+    await renderMembers();
+  } catch (err) {
+    showToast('Could not remove member', 'error');
+  }
 }
 
 function recipesCol() { return window._collection(window._db, 'households', householdId, 'recipes'); }
