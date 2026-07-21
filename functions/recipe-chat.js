@@ -72,8 +72,9 @@ Keep responses focused and practical. Use metric measurements. Do not use bullet
           },
           contents: geminiMessages,
           generationConfig: {
-            maxOutputTokens: 700,
+            maxOutputTokens: 1024,
             temperature: 0.7,
+            thinkingConfig: { thinkingBudget: 0 },
           },
           safetySettings: [
             { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_ONLY_HIGH' },
@@ -99,7 +100,8 @@ Keep responses focused and practical. Use metric measurements. Do not use bullet
     }
 
     const reply = candidate.content?.parts?.[0]?.text || 'Sorry, I could not generate a response.';
-    return new Response(JSON.stringify({ reply }), { status: 200, headers });
+    const finishedEarly = candidate.finishReason === 'MAX_TOKENS';
+    return new Response(JSON.stringify({ reply, truncated: finishedEarly }), { status: 200, headers });
 
   } catch (err) {
     return new Response(JSON.stringify({ error: 'Internal error', detail: err.message }), { status: 500, headers });
