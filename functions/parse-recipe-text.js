@@ -36,7 +36,7 @@ Rules:
 - "emoji": single emoji representing the dish.
 - "description": one sentence summary or null.
 
-Return ONLY a raw JSON object. No markdown, no code fences, no explanation. Start your response with { and end with }.
+Return ONLY a raw JSON object matching this exact shape. If some information isn't present in the text, use your best reasonable judgement to fill it in rather than leaving the recipe incomplete — you must always return a usable recipe object, never plain text or an explanation.
 
 {
   "title": "",
@@ -65,7 +65,8 @@ ${text}
           contents: [{ role: 'user', parts: [{ text: prompt }] }],
           generationConfig: {
             temperature: 0.2,
-            maxOutputTokens: 2048,
+            maxOutputTokens: 4096,
+            responseMimeType: 'application/json',
           },
         }),
       }
@@ -77,9 +78,13 @@ ${text}
     }
 
     const data = await res.json();
-    const raw = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    const candidate = data.candidates?.[0];
+    const raw = candidate?.content?.parts?.[0]?.text;
 
     if (!raw) {
+      if (candidate?.finishReason === 'MAX_TOKENS') {
+        return new Response(JSON.stringify({ error: 'Recipe was too long for the AI to finish, try pasting a shorter excerpt' }), { status: 502, headers });
+      }
       return new Response(JSON.stringify({ error: 'Gemini returned no content' }), { status: 502, headers });
     }
 
@@ -92,14 +97,16 @@ ${text}
     // Extract just the JSON object in case there's any preamble
     const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
-      return new Response(JSON.stringify({ error: 'Could not find JSON in AI response' }), { status: 502, headers });
+      const hint = candidate?.finishReason === 'MAX_TOKENS' ? ' (response was cut off — try a shorter paste)' : '';
+      return new Response(JSON.stringify({ error: `Could not find JSON in AI response${hint}` }), { status: 502, headers });
     }
 
     let parsed;
     try {
       parsed = JSON.parse(jsonMatch[0]);
     } catch {
-      return new Response(JSON.stringify({ error: 'Could not parse AI response into a recipe' }), { status: 502, headers });
+      const hint = candidate?.finishReason === 'MAX_TOKENS' ? ' (response was cut off — try a shorter paste)' : '';
+      return new Response(JSON.stringify({ error: `Could not parse AI response into a recipe${hint}` }), { status: 502, headers });
     }
 
     const recipe = {
