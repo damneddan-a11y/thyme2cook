@@ -1902,7 +1902,7 @@ async function sendChat() {
     thinking.remove();
     if(!res.ok) throw new Error(data.error||'Chat error');
     chatHistory.push({role:'assistant',content:data.reply});
-    appendChat(data.reply,'ai');
+    appendChat(data.reply + (data.truncated ? ' …' : ''),'ai');
   } catch(err) {
     thinking.remove();
     appendChat('Something went wrong — please try again.','ai');
