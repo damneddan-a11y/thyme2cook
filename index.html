@@ -1283,7 +1283,7 @@ function toggleAccountMenu(force) {
 document.addEventListener('click', e => {
   const menu = document.getElementById('accountMenu');
   const btn  = document.getElementById('accountBtn');
-  if (menu && menu.classList.contains('open') && !menu.contains(e.target) && e.target !== btn) menu.classList.remove('open');
+  if (menu && menu.classList.contains('open') && !menu.contains(e.target) && !btn.contains(e.target)) menu.classList.remove('open');
 });
 
 let unsubscribeRecipes = null, unsubscribePlanner = null;
