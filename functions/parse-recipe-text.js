@@ -75,7 +75,10 @@ ${text}
 
     if (!res.ok) {
       const err = await res.text();
-      return new Response(JSON.stringify({ error: 'Gemini API error', detail: err }), { status: 502, headers });
+      if (res.status === 429) {
+        return new Response(JSON.stringify({ error: 'Gemini rate limit hit — wait a minute and try again', detail: err }), { status: 502, headers });
+      }
+      return new Response(JSON.stringify({ error: `Gemini API error (${res.status})`, detail: err }), { status: 502, headers });
     }
 
     const data = await res.json();
