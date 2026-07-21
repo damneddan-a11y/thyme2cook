@@ -206,14 +206,14 @@ body {
 .topbar-actions { display: flex; gap: 6px; }
 .icon-btn {
   width: 36px; height: 36px; border-radius: 10px;
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.12);
-  color: rgba(255,255,255,0.6);
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  color: var(--text-mid);
   display: flex; align-items: center; justify-content: center;
   cursor: pointer; font-size: 15px;
   transition: all 0.15s !important;
 }
-.icon-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
+.icon-btn:hover { background: var(--accent-sub); color: var(--accent); }
 .icon-btn.active { background: var(--accent); color: var(--fab-text); border-color: var(--accent); }
 
 /* theme toggle special */
