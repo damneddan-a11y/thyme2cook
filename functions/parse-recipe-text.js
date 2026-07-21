@@ -30,7 +30,7 @@ Rules:
 - "title": short clean recipe name.
 - "prepTime" and "cookTime": strings like "15 min" or "1 hr 30 min", or null if unknown.
 - "servings": a number, default 4 if not stated.
-- "ingredients": array of { "amount": "200g", "name": "plain flour" }. Amount can be empty string if no quantity given.
+- "ingredients": array of { "amount": "200g", "name": "plain flour" }. Amount can be empty string if no quantity given. If the source text repeats an ingredient with multiple alternative units or notes in parentheses (e.g. "1 1/2 lb chicken (700 gram, boneless, thighs or breasts)"), consolidate it into ONE clean metric entry (e.g. amount "700g", name "chicken thighs or breasts, boneless") rather than reproducing every alternative unit or duplicate note.
 - "steps": array of strings, one clear instruction per step.
 - "categories": array using only these values where applicable: "quick" (30 min or less total), "vegetarian", "baking", "weekend" (90+ min total). Empty array if none apply.
 - "emoji": single emoji representing the dish.
@@ -65,8 +65,9 @@ ${text}
           contents: [{ role: 'user', parts: [{ text: prompt }] }],
           generationConfig: {
             temperature: 0.2,
-            maxOutputTokens: 4096,
+            maxOutputTokens: 8192,
             responseMimeType: 'application/json',
+            thinkingConfig: { thinkingBudget: 0 },
           },
         }),
       }
