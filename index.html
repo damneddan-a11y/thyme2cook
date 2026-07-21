@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Thyme2Cook</title>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,700;1,9..144,300;1,9..144,400&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Syne:wght@400;500;600;700;800&family=Geist+Mono:wght@300;400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 
 <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
@@ -67,67 +67,67 @@
 
 /* ── THEME TOKENS ─────────────────────────────────────────────────────────── */
 :root, [data-theme="dark"] {
-  --bg:          #0a0a0a;
-  --bg2:         #0f0f0f;
-  --surface:     #111111;
-  --surface2:    #161616;
-  --surface3:    #1e1e1e;
-  --border:      #222222;
-  --border2:     #2a2a2a;
-  --accent:      #f0be56;
-  --accent-dim:  #a07e2a;
-  --accent-sub:  rgba(240,190,86,0.08);
-  --text:        #e8e8e8;
-  --text-mid:    #888888;
-  --text-dim:    #444444;
-  --topbar-bg:   #0a0a0a;
-  --topbar-text: #e8e8e8;
-  --logo-font:   'Syne', sans-serif;
-  --logo-weight: 800;
-  --card-bg:     #111111;
-  --fab-bg:      #f0be56;
-  --fab-text:    #0a0a0a;
-  --tag-bg:      rgba(240,190,86,0.10);
-  --tag-text:    #a07e2a;
-  --tag-border:  rgba(240,190,86,0.20);
+  --bg:          #12161b;
+  --bg2:         #12161b;
+  --surface:     #171c22;
+  --surface2:    #20272f;
+  --surface3:    #1a2027;
+  --border:      #232a32;
+  --border2:     #2c343e;
+  --accent:      #e0985a;
+  --accent-dim:  #b97a45;
+  --accent-sub:  rgba(224,152,90,0.12);
+  --text:        #eef1f4;
+  --text-mid:    #8b95a0;
+  --text-dim:    #5d6773;
+  --topbar-bg:   #171c22;
+  --topbar-text: #eef1f4;
+  --logo-font:   'Space Grotesk', sans-serif;
+  --logo-weight: 700;
+  --card-bg:     #1a2027;
+  --fab-bg:      #e0985a;
+  --fab-text:    #171009;
+  --tag-bg:      rgba(224,152,90,0.12);
+  --tag-text:    #e0985a;
+  --tag-border:  rgba(224,152,90,0.35);
   --red:         #e05555;
   --green:       #5da06a;
-  --hero-grad:   linear-gradient(135deg, #8b5e3c 0%, #c4865a 40%, #e8b88a 100%);
-  --chat-user:   #1e1a10;
-  --chat-ai:     #111c11;
+  --hero-grad:   linear-gradient(135deg, #4a3626 0%, #b97a45 45%, #e0985a 100%);
+  --chat-user:   rgba(224,152,90,0.10);
+  --chat-ai:     rgba(93,160,106,0.08);
   --toggle-icon: '☀';
   color-scheme: dark;
 }
 
 [data-theme="light"] {
-  --bg:          #f5ede0;
-  --bg2:         #ede3d4;
-  --surface:     #faf6f0;
-  --surface2:    #f0e8d8;
-  --surface3:    #e8dcc8;
-  --border:      #ddd0bc;
-  --border2:     #c8b8a0;
-  --accent:      #8b5e3c;
-  --accent-dim:  #6b4428;
-  --accent-sub:  rgba(139,94,60,0.08);
-  --text:        #2c1f14;
-  --text-mid:    #6b4e30;
-  --text-dim:    #b0957a;
-  --topbar-bg:   #2c1f14;
-  --topbar-text: #f5ede0;
-  --logo-font:   'Playfair Display', serif;
+  --bg:          #f4f4f1;
+  --bg2:         #f4f4f1;
+  --surface:     #ffffff;
+  --surface2:    #f7f7f4;
+  --surface3:    #ffffff;
+  --border:      #e4e4de;
+  --border2:     #d6d6cd;
+  --accent:      #c9762e;
+  --accent-dim:  #a35f24;
+  --accent-sub:  rgba(201,118,46,0.10);
+  --text:        #191a17;
+  --text-mid:    #6c6c62;
+  --text-dim:    #a5a59a;
+  --topbar-bg:   #ffffff;
+  --topbar-text: #191a17;
+  --logo-font:   'Space Grotesk', sans-serif;
   --logo-weight: 700;
   --card-bg:     #ffffff;
-  --fab-bg:      #2c1f14;
-  --fab-text:    #f5ede0;
-  --tag-bg:      rgba(139,94,60,0.10);
-  --tag-text:    #8b5e3c;
-  --tag-border:  rgba(139,94,60,0.20);
+  --fab-bg:      #c9762e;
+  --fab-text:    #ffffff;
+  --tag-bg:      rgba(201,118,46,0.10);
+  --tag-text:    #c9762e;
+  --tag-border:  rgba(201,118,46,0.32);
   --red:         #c0392b;
   --green:       #4a8a5a;
-  --hero-grad:   linear-gradient(135deg, #2c1f14 0%, #8b5e3c 50%, #d4966a 100%);
-  --chat-user:   #f0e0cc;
-  --chat-ai:     #e8f0e0;
+  --hero-grad:   linear-gradient(135deg, #e8dcc8 0%, #d7ab7c 50%, #c9762e 100%);
+  --chat-user:   rgba(201,118,46,0.08);
+  --chat-ai:     rgba(74,138,90,0.08);
   --toggle-icon: '☾';
   color-scheme: light;
 }
@@ -146,7 +146,7 @@ html { scroll-behavior: smooth; }
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Space Grotesk', sans-serif;
   min-height: 100vh;
   font-size: 14px;
   line-height: 1.5;
@@ -165,7 +165,7 @@ body {
 .account-btn {
   width: 36px; height: 36px; border-radius: 50%;
   background: var(--accent); color: var(--fab-text);
-  font-family: 'Syne', sans-serif; font-weight: 800; font-size: 14px;
+  font-family: 'Space Grotesk', sans-serif; font-weight: 800; font-size: 14px;
   display: flex; align-items: center; justify-content: center;
   cursor: pointer; overflow: hidden; flex-shrink: 0;
 }
@@ -180,10 +180,10 @@ body {
 .account-menu.open { opacity: 1; pointer-events: all; transform: translateY(0); }
 .account-menu-item {
   padding: 9px 12px; font-size: 13px; color: var(--text); border-radius: 8px;
-  cursor: pointer; font-family: 'Syne', sans-serif; font-weight: 600;
+  cursor: pointer; font-family: 'Space Grotesk', sans-serif; font-weight: 600;
 }
 .account-menu-item:hover { background: var(--surface3); }
-.account-menu-email { padding: 8px 12px 4px; font-size: 11px; color: var(--text-dim); font-family: 'Geist Mono', monospace; word-break: break-all; }
+.account-menu-email { padding: 8px 12px 4px; font-size: 11px; color: var(--text-dim); font-family: 'IBM Plex Mono', monospace; word-break: break-all; }
 
 /* ── TOPBAR ── */
 .topbar {
@@ -194,17 +194,14 @@ body {
   display: flex; align-items: center; justify-content: space-between;
 }
 .logo {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 23px;
-  font-weight: 600;
-  font-style: italic;
-  letter-spacing: 0.01em;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
   color: var(--topbar-text);
   line-height: 1;
 }
-[data-theme="light"] .logo { font-weight: 400; }
 .logo .dot { color: var(--accent); font-style: normal; }
-[data-theme="light"] .logo .dot { color: #d4966a; }
 
 .topbar-actions { display: flex; gap: 6px; }
 .icon-btn {
@@ -229,7 +226,7 @@ body {
   background: var(--bg);
 }
 .tab {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Space Grotesk', sans-serif;
   font-size: 11px; font-weight: 700;
   letter-spacing: 0.08em; text-transform: uppercase;
   padding: 8px 14px 12px;
@@ -251,7 +248,7 @@ body {
 .search-bar:focus-within { border-color: var(--accent-dim); }
 .search-bar input {
   background: none; border: none; outline: none;
-  color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; width: 100%;
+  color: var(--text); font-family: 'Space Grotesk', sans-serif; font-size: 14px; width: 100%;
 }
 .search-bar input::placeholder { color: var(--text-dim); }
 
@@ -263,7 +260,7 @@ body {
 }
 .filter-row::-webkit-scrollbar { display: none; }
 .chip {
-  font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 600;
+  font-family: 'Space Grotesk', sans-serif; font-size: 11px; font-weight: 600;
   letter-spacing: 0.05em; padding: 5px 12px; border-radius: 20px;
   cursor: pointer; white-space: nowrap;
   border: 1px solid var(--border2);
@@ -280,48 +277,60 @@ body {
   background: var(--bg);
 }
 .section-title {
-  font-family: 'Geist Mono', monospace; font-size: 10px;
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px;
   letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-dim);
 }
 .section-count {
-  font-family: 'Geist Mono', monospace; font-size: 10px; color: var(--accent-dim);
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--accent-dim);
 }
 
 /* ── RECIPE LIST ── */
-.recipe-list { padding: 0 20px 100px; background: var(--bg); }
-.recipe-row {
-  display: flex; align-items: center; gap: 14px;
-  padding: 12px 0; border-bottom: 1px solid var(--border);
-  cursor: pointer; transition: padding-left 0.15s !important;
+.recipe-list {
+  padding: 4px 20px 100px; background: var(--bg);
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px;
 }
-.recipe-row:hover { padding-left: 4px; }
-.recipe-row:hover .recipe-title { color: var(--accent); }
-.recipe-row:last-child { border-bottom: none; }
+.recipe-card {
+  background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px;
+  overflow: hidden; cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease !important;
+  animation: fadeIn 0.3s ease both;
+}
+.recipe-card:hover { transform: translateY(-3px); border-color: var(--accent-dim); box-shadow: 0 10px 26px rgba(0,0,0,0.18); }
+.recipe-card:hover .recipe-title { color: var(--accent); }
 .recipe-thumb {
-  width: 52px; height: 52px; border-radius: 12px;
-  background: var(--surface3); border: 1px solid var(--border2);
+  width: 100%; height: 132px;
+  background: var(--hero-grad); border-bottom: 1px solid var(--border);
   display: flex; align-items: center; justify-content: center;
-  font-size: 26px; flex-shrink: 0; overflow: hidden;
+  font-size: 34px; flex-shrink: 0; overflow: hidden; position: relative;
 }
 .recipe-thumb img { width: 100%; height: 100%; object-fit: cover; }
-.recipe-info { flex: 1; min-width: 0; }
+.recipe-info { flex: 1; min-width: 0; padding: 10px 12px 12px; }
 .recipe-title {
-  font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700;
+  font-family: 'Space Grotesk', sans-serif; font-size: 14.5px; font-weight: 700;
   letter-spacing: -0.01em; color: var(--text);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   transition: color 0.15s !important;
 }
-.recipe-meta { display: flex; align-items: center; gap: 8px; margin-top: 3px; }
-.recipe-source { font-size: 11px; color: var(--text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px; }
+.recipe-meta { display: flex; align-items: center; gap: 6px; margin-top: 5px; }
+.recipe-source { font-size: 10.5px; color: var(--text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px; }
 .recipe-dot { width: 2px; height: 2px; border-radius: 50%; background: var(--text-dim); flex-shrink: 0; }
-.recipe-time { font-family: 'Geist Mono', monospace; font-size: 11px; color: var(--text-mid); flex-shrink: 0; }
-.recipe-tags { display: flex; gap: 4px; margin-top: 5px; flex-wrap: wrap; }
+.recipe-time {
+  font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--text-mid); flex-shrink: 0;
+}
+.recipe-tags { display: flex; gap: 4px; margin-top: 6px; flex-wrap: wrap; }
 .recipe-tag {
-  font-size: 9px; font-weight: 600; font-family: 'Syne', sans-serif;
+  font-size: 9px; font-weight: 600; font-family: 'Space Grotesk', sans-serif;
   letter-spacing: 0.05em; padding: 2px 6px; border-radius: 4px;
   background: var(--tag-bg); color: var(--tag-text); border: 1px solid var(--tag-border);
 }
-.fav-icon { font-size: 14px; cursor: pointer; color: var(--text-dim); transition: all 0.15s !important; }
+.fav-icon {
+  position: absolute; top: 8px; right: 8px; z-index: 2;
+  width: 30px; height: 30px; border-radius: 50%;
+  background: rgba(12,10,6,0.4); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; cursor: pointer; color: #fff; transition: all 0.15s !important;
+}
 .fav-icon:hover { color: var(--accent); }
 .fav-icon.active { color: var(--accent); }
 
@@ -332,8 +341,8 @@ body {
   max-width: calc(480px - 40px); width: calc(100% - 40px);
   background: var(--fab-bg); color: var(--fab-text);
   border: none; border-radius: 50px; padding: 16px 28px;
-  font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 600;
-  font-style: italic; letter-spacing: 0.02em; cursor: pointer;
+  font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 600;
+  letter-spacing: 0.02em; cursor: pointer;
   display: flex; align-items: center; justify-content: center; gap: 8px;
   box-shadow: 0 8px 32px rgba(0,0,0,0.25);
   transition: transform 0.2s ease, box-shadow 0.2s ease !important;
@@ -362,7 +371,7 @@ body {
 .overlay.open .sheet { transform: translateY(0); }
 .sheet-handle { width: 40px; height: 4px; background: var(--border2); border-radius: 2px; margin: 14px auto 0; }
 .sheet-header { padding: 16px 20px 0; display: flex; align-items: center; justify-content: space-between; }
-.sheet-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 800; letter-spacing: -0.02em; color: var(--text); }
+.sheet-title { font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 800; letter-spacing: -0.02em; color: var(--text); }
 .close-btn {
   width: 32px; height: 32px; border-radius: 50%;
   background: var(--surface3); border: 1px solid var(--border);
@@ -381,12 +390,12 @@ body {
 .url-input:focus-within { border-color: var(--accent-dim); }
 .url-input input {
   background: none; border: none; outline: none; color: var(--text);
-  font-family: 'Geist Mono', monospace; font-size: 12px; width: 100%;
+  font-family: 'IBM Plex Mono', monospace; font-size: 12px; width: 100%;
 }
-.url-input input::placeholder { color: var(--text-dim); font-family: 'DM Sans', sans-serif; font-size: 13px; }
+.url-input input::placeholder { color: var(--text-dim); font-family: 'Space Grotesk', sans-serif; font-size: 13px; }
 .url-examples { padding: 12px 20px 0; }
 .url-examples p {
-  font-family: 'Geist Mono', monospace; font-size: 10px;
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px;
   color: var(--text-dim); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px;
 }
 .url-example-row { display: flex; gap: 8px; flex-wrap: wrap; }
@@ -402,7 +411,7 @@ body {
   margin: 16px 20px 0; width: calc(100% - 40px);
   background: var(--fab-bg); color: var(--fab-text);
   border: none; border-radius: 12px; padding: 13px;
-  font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 800;
+  font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 800;
   letter-spacing: 0.02em; cursor: pointer;
   display: flex; align-items: center; justify-content: center; gap: 8px;
   transition: opacity 0.2s !important;
@@ -416,14 +425,14 @@ body {
   border-top-color: var(--fab-text); border-radius: 50%;
   animation: spin 0.7s linear infinite;
 }
-[data-theme="dark"] .submit-btn.loading::after { border-top-color: #0a0a0a; }
+[data-theme="dark"] .submit-btn.loading::after { border-top-color: #171009; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 .secondary-btn {
   margin: 12px 20px 0; width: calc(100% - 40px);
   background: var(--surface2); color: var(--text-mid);
   border: 1px solid var(--border2); border-radius: 12px; padding: 13px;
-  font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700;
+  font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 700;
   cursor: pointer; transition: all 0.15s !important;
 }
 .secondary-btn:hover { border-color: var(--accent-dim); color: var(--text); }
@@ -434,13 +443,13 @@ body {
 /* ── FORM ── */
 .form-group { padding: 14px 20px 0; }
 .form-label {
-  font-family: 'Geist Mono', monospace; font-size: 10px;
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px;
   letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); display: block; margin-bottom: 6px;
 }
 .form-input {
   width: 100%; background: var(--surface2); border: 1px solid var(--border2);
   border-radius: 10px; padding: 11px 14px; color: var(--text);
-  font-family: 'DM Sans', sans-serif; font-size: 14px; outline: none;
+  font-family: 'Space Grotesk', sans-serif; font-size: 14px; outline: none;
 }
 .form-input:focus { border-color: var(--accent-dim); }
 .form-input::placeholder { color: var(--text-dim); }
@@ -450,9 +459,9 @@ textarea.form-input { resize: vertical; min-height: 80px; }
 
 /* ── DETAIL ── */
 .detail-hero {
-  height: 200px; background: var(--surface2);
+  height: 180px; background: var(--hero-grad);
   display: flex; align-items: center; justify-content: center;
-  font-size: 80px; position: relative; overflow: hidden;
+  font-size: 70px; position: relative; overflow: hidden;
 }
 .detail-hero img { width: 100%; height: 100%; object-fit: cover; }
 .detail-hero::after {
@@ -478,30 +487,27 @@ textarea.form-input { resize: vertical; min-height: 80px; }
 }
 .detail-body { padding: 0 20px; }
 .detail-kicker {
-  font-family: 'Geist Mono', monospace; font-size: 10px;
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px;
   letter-spacing: 0.15em; color: var(--accent); text-transform: uppercase; margin-top: 16px;
 }
 .detail-title {
-  font-family: 'Fraunces', serif; font-size: 26px; font-weight: 700;
-  font-style: italic; letter-spacing: -0.01em; line-height: 1.15; margin-top: 4px; color: var(--text);
+  font-family: 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 700;
+  letter-spacing: -0.01em; line-height: 1.2; margin-top: 4px; color: var(--text);
 }
-[data-theme="light"] .detail-title { font-weight: 400; }
 
-.detail-stats {
-  display: flex; margin-top: 14px;
-  border: 1px solid var(--border2); border-radius: 12px; overflow: hidden;
+.detail-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+.detail-chip {
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--accent); background: var(--accent-sub); border: 1px solid var(--tag-border);
+  border-radius: 20px; padding: 5px 11px;
 }
-.detail-stat { flex: 1; padding: 10px 8px; text-align: center; border-right: 1px solid var(--border2); }
-.detail-stat:last-child { border-right: none; }
-.detail-stat-val { font-family: 'Fraunces', serif; font-size: 15px; font-weight: 300; font-style: italic; color: var(--accent); }
-.detail-stat-label { font-size: 9px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 2px; font-family: 'Geist Mono', monospace; }
 
 .servings-row {
   display: flex; align-items: center; justify-content: space-between;
-  margin-top: 16px; padding: 12px 14px;
+  margin-top: 12px; padding: 12px 14px;
   background: var(--surface2); border-radius: 12px; border: 1px solid var(--border2);
 }
-.servings-label { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; color: var(--text); }
+.servings-label { font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 700; color: var(--text); }
 .servings-ctrl { display: flex; align-items: center; gap: 12px; }
 .serv-btn {
   width: 28px; height: 28px; border-radius: 8px;
@@ -510,15 +516,17 @@ textarea.form-input { resize: vertical; min-height: 80px; }
   display: flex; align-items: center; justify-content: center; transition: all 0.15s !important;
 }
 .serv-btn:hover { background: var(--accent); color: var(--fab-text); border-color: var(--accent); }
-.serv-count { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 800; color: var(--accent); min-width: 24px; text-align: center; }
+.serv-count { font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 800; color: var(--accent); min-width: 24px; text-align: center; }
 
-/* ── DETAIL TABS ── */
+/* ── DETAIL TABS / PANES ── */
+.detail-panes { margin-top: 4px; }
+.pane-header { display: none; }
 .detail-tabs {
   display: flex; margin-top: 16px;
   border-bottom: 1px solid var(--border);
 }
 .detail-tab {
-  font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700;
+  font-family: 'Space Grotesk', sans-serif; font-size: 12px; font-weight: 700;
   letter-spacing: 0.06em; text-transform: uppercase;
   padding: 8px 16px 12px; cursor: pointer;
   color: var(--text-dim); border-bottom: 2px solid transparent;
@@ -548,7 +556,7 @@ textarea.form-input { resize: vertical; min-height: 80px; }
   position: absolute; left: 50%; bottom: 100%;
   transform: translateX(-50%) translateY(-6px);
   background: var(--accent); color: var(--fab-text);
-  font-family: 'Geist Mono', monospace; font-size: 10px; font-weight: 700;
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 700;
   padding: 4px 8px; border-radius: 6px; white-space: nowrap;
   z-index: 20; pointer-events: none;
   animation: tipPop 0.15s ease;
@@ -570,7 +578,7 @@ textarea.form-input { resize: vertical; min-height: 80px; }
 }
 .ingredient-row.checked .ingredient-check { background: var(--accent); border-color: var(--accent); color: var(--fab-text); }
 .ingredient-name { flex: 1; font-size: 13px; color: var(--text); }
-.ingredient-amount { font-family: 'Geist Mono', monospace; font-size: 12px; color: var(--accent); white-space: nowrap; }
+.ingredient-amount { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--accent); white-space: nowrap; }
 
 /* ── METHOD STEPS ── */
 .steps-list { display: flex; flex-direction: column; gap: 8px; padding-bottom: 8px; }
@@ -586,7 +594,7 @@ textarea.form-input { resize: vertical; min-height: 80px; }
   padding: 11px 14px;
 }
 .step-num {
-  font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 800; color: var(--accent);
+  font-family: 'Space Grotesk', sans-serif; font-size: 11px; font-weight: 800; color: var(--accent);
   width: 24px; height: 24px; border-radius: 6px;
   background: var(--accent-sub); border: 1px solid var(--tag-border);
   display: flex; align-items: center; justify-content: center; flex-shrink: 0;
@@ -610,7 +618,7 @@ textarea.form-input { resize: vertical; min-height: 80px; }
 .step-item.expanded .step-body { display: block; }
 .step-item.active-step .step-body { display: block; }
 .step-done-btn {
-  margin-top: 10px; font-family: 'Syne', sans-serif;
+  margin-top: 10px; font-family: 'Space Grotesk', sans-serif;
   font-size: 11px; font-weight: 700; letter-spacing: 0.04em;
   background: var(--accent-sub); color: var(--accent);
   border: 1px solid var(--tag-border); border-radius: 8px;
@@ -622,7 +630,7 @@ textarea.form-input { resize: vertical; min-height: 80px; }
 .detail-actions { display: flex; gap: 8px; margin-top: 24px; padding-bottom: 20px; }
 .action-btn {
   flex: 1; padding: 12px; border-radius: 12px; border: none;
-  font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700;
+  font-family: 'Space Grotesk', sans-serif; font-size: 12px; font-weight: 700;
   cursor: pointer; text-align: center; transition: all 0.15s !important;
 }
 .action-primary { background: var(--fab-bg); color: var(--fab-text); }
@@ -635,7 +643,7 @@ textarea.form-input { resize: vertical; min-height: 80px; }
 /* ── CHAT ── */
 .chat-header { padding: 0 20px 12px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
 .chat-recipe-name {
-  font-family: 'Geist Mono', monospace; font-size: 10px;
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px;
   letter-spacing: 0.1em; color: var(--accent); text-transform: uppercase; margin-top: 6px;
 }
 .chat-messages {
@@ -684,7 +692,7 @@ textarea.form-input { resize: vertical; min-height: 80px; }
 .chat-input {
   flex: 1; background: var(--surface2); border: 1px solid var(--border2);
   border-radius: 12px; padding: 10px 14px; color: var(--text);
-  font-family: 'DM Sans', sans-serif; font-size: 14px; outline: none;
+  font-family: 'Space Grotesk', sans-serif; font-size: 14px; outline: none;
   resize: none; line-height: 1.4; min-height: 44px; max-height: 120px;
 }
 .chat-input:focus { border-color: rgba(93,160,106,0.4); }
@@ -706,15 +714,15 @@ textarea.form-input { resize: vertical; min-height: 80px; }
 }
 .cook-mode.open { opacity: 1; pointer-events: all; }
 .cook-header { padding: 20px 20px 0; display: flex; justify-content: space-between; align-items: center; }
-.cook-indicator { font-family: 'Geist Mono', monospace; font-size: 11px; color: var(--text-dim); letter-spacing: 0.12em; }
-.cook-title { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; color: var(--text-mid); padding: 6px 20px 0; }
+.cook-indicator { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text-dim); letter-spacing: 0.12em; }
+.cook-title { font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 700; color: var(--text-mid); padding: 6px 20px 0; }
 .cook-body { flex: 1; display: flex; align-items: center; padding: 20px; }
 .cook-step { font-size: 22px; line-height: 1.5; color: var(--text); font-weight: 300; }
 .cook-step strong { font-weight: 600; color: var(--accent); }
 .cook-nav { display: flex; gap: 12px; padding: 20px; padding-bottom: 40px; }
 .cook-btn {
   flex: 1; padding: 15px; border-radius: 14px; border: none;
-  font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 800;
+  font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 800;
   cursor: pointer; text-align: center; transition: all 0.15s !important;
 }
 .cook-prev { background: var(--surface2); color: var(--text-mid); border: 1px solid var(--border2) !important; }
@@ -726,7 +734,7 @@ textarea.form-input { resize: vertical; min-height: 80px; }
   display: flex; flex-direction: column; align-items: center;
 }
 .empty-icon { font-size: 48px; margin-bottom: 16px; opacity: 0.4; }
-.empty h3 { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; color: var(--text-mid); margin-bottom: 6px; }
+.empty h3 { font-family: 'Space Grotesk', sans-serif; font-size: 16px; font-weight: 700; color: var(--text-mid); margin-bottom: 6px; }
 .empty p { font-size: 13px; line-height: 1.5; }
 
 /* ── LOADING OVERLAY ── */
@@ -743,8 +751,8 @@ textarea.form-input { resize: vertical; min-height: 80px; }
   border-top-color: var(--accent); border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
-.loading-text { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; color: var(--text-mid); }
-.loading-sub { font-family: 'Geist Mono', monospace; font-size: 11px; color: var(--text-dim); letter-spacing: 0.1em; }
+.loading-text { font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 700; color: var(--text-mid); }
+.loading-sub { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text-dim); letter-spacing: 0.1em; }
 
 /* ── TOAST ── */
 .toast {
@@ -752,7 +760,7 @@ textarea.form-input { resize: vertical; min-height: 80px; }
   left: 50%; transform: translateX(-50%) translateY(20px);
   background: var(--surface3); border: 1px solid var(--border2);
   color: var(--text); padding: 10px 16px; border-radius: 10px;
-  font-size: 13px; font-family: 'Syne', sans-serif; font-weight: 600;
+  font-size: 13px; font-family: 'Space Grotesk', sans-serif; font-weight: 600;
   white-space: nowrap; opacity: 0; pointer-events: none;
   z-index: 300; max-width: calc(480px - 40px); width: max-content;
   transition: all 0.25s !important;
@@ -762,7 +770,6 @@ textarea.form-input { resize: vertical; min-height: 80px; }
 .toast.error { border-color: var(--red); color: var(--red); }
 
 @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
-.recipe-row { animation: fadeIn 0.3s ease both; }
 
 /* ── PLANNER ── */
 .planner-mode {
@@ -778,14 +785,14 @@ textarea.form-input { resize: vertical; min-height: 80px; }
   display: flex; align-items: center; gap: 10px;
   padding: 12px 20px; flex-shrink: 0; border-bottom: 1px solid var(--border);
 }
-.planner-days-label { font-family: 'Geist Mono', monospace; font-size: 10px; letter-spacing: 0.1em; color: var(--text-dim); text-transform: uppercase; flex: 1; }
-.planner-days-val { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 800; color: var(--accent); min-width: 60px; text-align: center; }
+.planner-days-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.1em; color: var(--text-dim); text-transform: uppercase; flex: 1; }
+.planner-days-val { font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 800; color: var(--accent); min-width: 60px; text-align: center; }
 .planner-body { flex: 1; overflow-y: auto; padding: 4px 20px 40px; }
 .planner-footer { flex-shrink: 0; padding: 12px 20px 20px; border-top: 1px solid var(--border); background: var(--bg); }
 .planner-day-card { padding: 14px 0; border-bottom: 1px solid var(--border); }
 .planner-day-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 8px; }
-.planner-day-date { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 800; color: var(--text); }
-.planner-day-sub { font-family: 'Geist Mono', monospace; font-size: 10px; color: var(--text-dim); letter-spacing: 0.06em; }
+.planner-day-date { font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 800; color: var(--text); }
+.planner-day-sub { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--text-dim); letter-spacing: 0.06em; }
 .planner-entry {
   display: flex; align-items: center; gap: 10px; padding: 8px 10px;
   background: var(--surface2); border: 1px solid var(--border2); border-radius: 10px; margin-top: 6px;
@@ -801,14 +808,14 @@ textarea.form-input { resize: vertical; min-height: 80px; }
 .planner-entry-remove { color: var(--text-dim); cursor: pointer; font-size: 15px; padding: 0 2px; }
 .planner-entry-remove:hover { color: var(--red); }
 .planner-add-btn {
-  margin-top: 8px; font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700;
+  margin-top: 8px; font-family: 'Space Grotesk', sans-serif; font-size: 11px; font-weight: 700;
   color: var(--accent); background: var(--accent-sub); border: 1px dashed var(--tag-border);
   border-radius: 8px; padding: 7px 10px; cursor: pointer; text-align: center;
 }
 .planner-add-btn:hover { background: var(--accent); color: var(--fab-text); border-style: solid; }
 
 .leftover-section { margin-top: 6px; padding-top: 16px; }
-.leftover-title { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 800; color: var(--text); margin-bottom: 3px; }
+.leftover-title { font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 800; color: var(--text); margin-bottom: 3px; }
 .leftover-sub { font-size: 11px; color: var(--text-dim); margin-bottom: 10px; }
 .leftover-card {
   display: flex; align-items: center; gap: 12px; padding: 10px 0;
@@ -822,8 +829,8 @@ textarea.form-input { resize: vertical; min-height: 80px; }
 }
 .leftover-thumb img { width: 100%; height: 100%; object-fit: cover; }
 .leftover-info { flex: 1; min-width: 0; }
-.leftover-name { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; color: var(--text); }
-.leftover-match { font-family: 'Geist Mono', monospace; font-size: 10px; color: var(--accent-dim); }
+.leftover-name { font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 700; color: var(--text); }
+.leftover-match { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--accent-dim); }
 .picker-search { padding: 14px 20px 0; }
 #pickerOverlay { z-index: 450; }
 .picker-list { padding: 8px 20px 30px; max-height: 60vh; overflow-y: auto; }
@@ -834,15 +841,15 @@ textarea.form-input { resize: vertical; min-height: 80px; }
 .member-row:last-child { border-bottom: none; }
 .member-avatar {
   width: 36px; height: 36px; border-radius: 50%; background: var(--accent); color: var(--fab-text);
-  font-family: 'Syne', sans-serif; font-weight: 800; font-size: 13px;
+  font-family: 'Space Grotesk', sans-serif; font-weight: 800; font-size: 13px;
   display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0;
 }
 .member-avatar img { width: 100%; height: 100%; object-fit: cover; }
 .member-info { flex: 1; min-width: 0; }
-.member-name { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; color: var(--text); }
+.member-name { font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 700; color: var(--text); }
 .member-email { font-size: 11px; color: var(--text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .member-tag {
-  font-family: 'Geist Mono', monospace; font-size: 9px; letter-spacing: 0.06em; text-transform: uppercase;
+  font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.06em; text-transform: uppercase;
   color: var(--accent-dim); background: var(--accent-sub); border: 1px solid var(--tag-border);
   border-radius: 4px; padding: 2px 6px; flex-shrink: 0;
 }
@@ -851,15 +858,52 @@ textarea.form-input { resize: vertical; min-height: 80px; }
 }
 .member-remove:hover { color: var(--red); }
 
+/* ── SIDEBAR (desktop shell) ── */
+.app-sidebar { display: none; }
+.app-content { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+
 /* ── DESKTOP / WIDE BROWSER ── */
-@media (min-width: 900px) {
+@media (min-width: 700px) {
   body { font-size: 15px; }
-  .app { max-width: 720px; min-height: 100vh; box-shadow: 0 0 60px rgba(0,0,0,0.3); border-left: 1px solid var(--border); border-right: 1px solid var(--border); }
-  .topbar { padding: 0 32px; height: 66px; }
-  .tabs, .search-wrap, .filter-row, .section-header, .recipe-list { padding-left: 32px; padding-right: 32px; }
-  .recipe-list { display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; }
-  .recipe-row { border-bottom: 1px solid var(--border); }
-  .fab { max-width: 360px; }
+  .app {
+    flex-direction: row; align-items: stretch;
+    max-width: 1400px; min-height: 100vh; margin: 0 auto;
+    border-left: 1px solid var(--border); border-right: 1px solid var(--border);
+  }
+  .app-sidebar {
+    display: flex; flex-direction: column;
+    width: 216px; flex-shrink: 0; padding: 20px 14px;
+    background: var(--surface); border-right: 1px solid var(--border);
+    position: sticky; top: 0; align-self: flex-start; height: 100vh; overflow-y: auto;
+  }
+  .sidebar-logo {
+    font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 700;
+    letter-spacing: -0.01em; color: var(--text); padding: 4px 10px 18px;
+  }
+  .sidebar-logo .dot { color: var(--accent); }
+  .sidebar-nav { display: flex; flex-direction: column; gap: 2px; }
+  .sidebar-label {
+    font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--text-dim); padding: 16px 10px 6px;
+  }
+  .sidebar-item {
+    font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 600;
+    color: var(--text-mid); padding: 8px 10px; border-radius: 8px; cursor: pointer;
+    transition: all 0.15s !important;
+  }
+  .sidebar-item:hover { background: var(--surface2); color: var(--text); }
+  .sidebar-item.active { background: var(--accent-sub); color: var(--accent); }
+  .sidebar-spacer { flex: 1; }
+  .sidebar-item.theme-btn { position: relative; display: flex; align-items: center; justify-content: space-between; }
+  .sidebar-item.theme-btn::after { content: var(--toggle-icon); font-size: 13px; }
+
+  .app-content { max-width: none; }
+  .topbar .logo { display: none; }
+  .planner-btn-mobile, .theme-btn-mobile { display: none; }
+  .tabs-mobile, .filter-row-mobile { display: none; }
+  .topbar { justify-content: flex-end; padding: 0 32px; height: 66px; }
+  .section-header, .recipe-list, .search-wrap { padding-left: 32px; padding-right: 32px; }
+  .fab { display: none; }
   .overlay { align-items: center; }
   .sheet {
     border-radius: 20px; max-width: 560px; max-height: 86vh;
@@ -867,12 +911,16 @@ textarea.form-input { resize: vertical; min-height: 80px; }
   }
   .overlay.open .sheet { transform: translateY(0) scale(1); opacity: 1; }
   #chatOverlay .sheet { max-width: 480px; }
+  #detailOverlay .sheet { max-width: 640px; max-height: 88vh; }
+  .detail-panes { display: grid; grid-template-columns: 5fr 7fr; gap: 24px; margin-top: 18px; }
+  .detail-tabs { display: none; }
+  .detail-tab-content { display: block !important; padding-top: 0; }
+  .pane-header {
+    display: block; font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 10px;
+  }
   .cook-mode, .planner-mode { max-width: 720px; }
   .auth-gate-inner { max-width: 380px; }
-}
-@media (min-width: 1200px) {
-  .recipe-list { grid-template-columns: 1fr 1fr 1fr; }
-  .app { max-width: 900px; }
 }
 </style>
 </head>
@@ -892,14 +940,16 @@ textarea.form-input { resize: vertical; min-height: 80px; }
   <div class="auth-gate-inner">
     <div class="logo" style="font-size:28px;margin-bottom:6px">Welcome</div>
     <p class="auth-gate-sub">Is this your first time here, or is someone already cooking with Thyme2Cook?</p>
-    <button class="submit-btn" style="margin:24px 0 0;max-width:280px" onclick="startOwnHousehold()">
-      <span class="btn-label">START MY OWN KITCHEN</span>
-    </button>
-    <div class="divider" style="margin:14px 0 0;max-width:280px;margin-left:auto;margin-right:auto"><div class="divider-line"></div><span>or</span><div class="divider-line"></div></div>
-    <input class="form-input" type="text" placeholder="Enter invite code" id="inviteCodeInput" style="margin-top:14px;max-width:280px;text-align:center;text-transform:uppercase;letter-spacing:0.1em" maxlength="6" />
-    <button class="secondary-btn" style="margin:10px 0 0;max-width:280px" onclick="joinHousehold()">
-      <span class="btn-label">JOIN WITH CODE</span>
-    </button>
+    <div style="max-width:280px;margin:24px auto 0">
+      <button class="submit-btn" style="margin:0;width:100%;max-width:none" onclick="startOwnHousehold()">
+        <span class="btn-label">START MY OWN KITCHEN</span>
+      </button>
+      <div class="divider" style="margin:14px 0 0"><div class="divider-line"></div><span>or</span><div class="divider-line"></div></div>
+      <input class="form-input" type="text" placeholder="Enter invite code" id="inviteCodeInput" style="margin-top:14px;width:100%;text-align:center;text-transform:uppercase;letter-spacing:0.1em" maxlength="6" />
+      <button class="secondary-btn" style="margin:10px 0 0;width:100%;max-width:none" onclick="joinHousehold()">
+        <span class="btn-label">JOIN WITH CODE</span>
+      </button>
+    </div>
   </div>
 </div>
 
@@ -913,7 +963,7 @@ textarea.form-input { resize: vertical; min-height: 80px; }
     </div>
     <div class="form-group" style="padding-top:16px">
       <p style="font-size:13px;color:var(--text-mid);line-height:1.5">Share this code with your partner. When they sign in with their own Google account and enter it, they'll see and edit the same recipes and planner as you.</p>
-      <div style="margin-top:18px;text-align:center;font-family:'Geist Mono',monospace;font-size:32px;font-weight:700;letter-spacing:0.15em;color:var(--accent);background:var(--surface2);border:1px solid var(--border2);border-radius:12px;padding:18px" id="inviteCodeDisplay">------</div>
+      <div style="margin-top:18px;text-align:center;font-family:'IBM Plex Mono', monospace;font-size:32px;font-weight:700;letter-spacing:0.15em;color:var(--accent);background:var(--surface2);border:1px solid var(--border2);border-radius:12px;padding:18px" id="inviteCodeDisplay">------</div>
     </div>
     <button class="submit-btn" onclick="copyInviteCode()"><span class="btn-label">COPY CODE</span></button>
   </div>
@@ -933,53 +983,76 @@ textarea.form-input { resize: vertical; min-height: 80px; }
 </div>
 
 <div class="app" id="app" style="display:none">
-  <div class="topbar">
-    <div class="logo">Thyme<span class="dot">2</span>Cook</div>
-    <div class="topbar-actions" style="position:relative">
-      <div class="icon-btn" id="searchToggle" onclick="toggleSearch()" title="Search">⌕</div>
-      <div class="icon-btn" onclick="openPlanner()" title="Planner">📅</div>
-      <div class="icon-btn theme-btn" id="themeToggle" onclick="toggleTheme()" title="Toggle theme"></div>
-      <div class="account-btn" id="accountBtn" onclick="toggleAccountMenu()" title="Account">?</div>
-      <div class="account-menu" id="accountMenu">
-        <div class="account-menu-email" id="accountEmail"></div>
-        <div class="account-menu-item" onclick="openMembers()">Manage household</div>
-        <div class="account-menu-item" onclick="openInvite()">Invite partner</div>
-        <div class="account-menu-item" onclick="doSignOut()">Sign out</div>
+  <aside class="app-sidebar">
+    <div class="sidebar-logo">Thyme<span class="dot">2</span>Cook</div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-item active" data-tab="all" onclick="setTab('all')">All recipes</div>
+      <div class="sidebar-item" data-tab="favourites" onclick="setTab('favourites')">★ Favourites</div>
+      <div class="sidebar-item" data-tab="recent" onclick="setTab('recent')">Recent</div>
+    </nav>
+    <div class="sidebar-label">Filter</div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-item active" data-filter="all" onclick="setFilter('all')">All categories</div>
+      <div class="sidebar-item" data-filter="quick" onclick="setFilter('quick')">⚡ Quick</div>
+      <div class="sidebar-item" data-filter="vegetarian" onclick="setFilter('vegetarian')">🌿 Vegetarian</div>
+      <div class="sidebar-item" data-filter="baking" onclick="setFilter('baking')">🥐 Baking</div>
+      <div class="sidebar-item" data-filter="weekend" onclick="setFilter('weekend')">🕐 Weekend</div>
+    </nav>
+    <div class="sidebar-spacer"></div>
+    <div class="sidebar-item" onclick="openPlanner()">📅 Planner</div>
+    <div class="sidebar-item theme-btn" onclick="toggleTheme()">Toggle theme</div>
+    <button class="submit-btn" style="margin:12px 0 0;width:100%" onclick="openAddSheet()">+ Save recipe</button>
+  </aside>
+
+  <div class="app-content">
+    <div class="topbar">
+      <div class="logo">Thyme<span class="dot">2</span>Cook</div>
+      <div class="topbar-actions" style="position:relative">
+        <div class="icon-btn search-toggle-btn" onclick="toggleSearch()" title="Search">⌕</div>
+        <div class="icon-btn planner-btn-mobile" onclick="openPlanner()" title="Planner">📅</div>
+        <div class="icon-btn theme-btn theme-btn-mobile" onclick="toggleTheme()" title="Toggle theme"></div>
+        <div class="account-btn" id="accountBtn" onclick="toggleAccountMenu()" title="Account">?</div>
+        <div class="account-menu" id="accountMenu">
+          <div class="account-menu-email" id="accountEmail"></div>
+          <div class="account-menu-item" onclick="openMembers()">Manage household</div>
+          <div class="account-menu-item" onclick="openInvite()">Invite partner</div>
+          <div class="account-menu-item" onclick="doSignOut()">Sign out</div>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="tabs">
-    <div class="tab active" onclick="setTab('all',this)">All</div>
-    <div class="tab" onclick="setTab('favourites',this)">Favourites</div>
-    <div class="tab" onclick="setTab('recent',this)">Recent</div>
-  </div>
-
-  <div class="search-wrap" id="searchWrap" style="display:none">
-    <div class="search-bar">
-      <span style="color:var(--text-dim);font-size:13px">⌕</span>
-      <input type="text" placeholder="Search recipes, ingredients…" id="searchInput" oninput="renderList()" />
+    <div class="tabs tabs-mobile">
+      <div class="tab active" data-tab="all" onclick="setTab('all')">All</div>
+      <div class="tab" data-tab="favourites" onclick="setTab('favourites')">Favourites</div>
+      <div class="tab" data-tab="recent" onclick="setTab('recent')">Recent</div>
     </div>
-  </div>
 
-  <div class="filter-row">
-    <div class="chip active" onclick="setFilter('all',this)">All</div>
-    <div class="chip" onclick="setFilter('quick',this)">⚡ Quick</div>
-    <div class="chip" onclick="setFilter('vegetarian',this)">🌿 Vegetarian</div>
-    <div class="chip" onclick="setFilter('baking',this)">🥐 Baking</div>
-    <div class="chip" onclick="setFilter('weekend',this)">🕐 Weekend</div>
-  </div>
+    <div class="search-wrap" id="searchWrap" style="display:none">
+      <div class="search-bar">
+        <span style="color:var(--text-dim);font-size:13px">⌕</span>
+        <input type="text" placeholder="Search recipes, ingredients…" id="searchInput" oninput="renderList()" />
+      </div>
+    </div>
 
-  <div class="section-header">
-    <span class="section-title" id="sectionTitle">↳ your collection</span>
-    <span class="section-count" id="sectionCount">— recipes</span>
-  </div>
+    <div class="filter-row filter-row-mobile">
+      <div class="chip active" data-filter="all" onclick="setFilter('all')">All</div>
+      <div class="chip" data-filter="quick" onclick="setFilter('quick')">⚡ Quick</div>
+      <div class="chip" data-filter="vegetarian" onclick="setFilter('vegetarian')">🌿 Vegetarian</div>
+      <div class="chip" data-filter="baking" onclick="setFilter('baking')">🥐 Baking</div>
+      <div class="chip" data-filter="weekend" onclick="setFilter('weekend')">🕐 Weekend</div>
+    </div>
 
-  <div class="recipe-list" id="recipeList">
-    <div class="empty"><div class="empty-icon">⏳</div><h3>Connecting…</h3></div>
-  </div>
+    <div class="section-header">
+      <span class="section-title" id="sectionTitle">↳ your collection</span>
+      <span class="section-count" id="sectionCount">— recipes</span>
+    </div>
 
-  <button class="fab" onclick="openAddSheet()">+ Save a recipe</button>
+    <div class="recipe-list" id="recipeList">
+      <div class="empty"><div class="empty-icon">⏳</div><h3>Connecting…</h3></div>
+    </div>
+
+    <button class="fab" onclick="openAddSheet()">+ Save a recipe</button>
+  </div>
 </div>
 
 <!-- ADD URL SHEET -->
@@ -1252,11 +1325,15 @@ window.addEventListener('auth-changed', async e => {
 
 async function startOwnHousehold() {
   const hid = currentUser.uid;
-  await window._setDoc(window._doc(window._db, 'households', hid), { members: [currentUser.uid], ownerUid: currentUser.uid, createdAt: Date.now() });
-  await window._setDoc(window._doc(window._db, 'memberships', currentUser.uid), { householdId: hid });
-  householdId = hid;
-  document.getElementById('onboardGate').style.display = 'none';
-  enterApp();
+  try {
+    await window._setDoc(window._doc(window._db, 'households', hid), { members: [currentUser.uid], ownerUid: currentUser.uid, createdAt: Date.now() });
+    await window._setDoc(window._doc(window._db, 'memberships', currentUser.uid), { householdId: hid });
+    householdId = hid;
+    document.getElementById('onboardGate').style.display = 'none';
+    enterApp();
+  } catch (err) {
+    showToast('Could not set up your kitchen, check Firestore rules are published', 'error');
+  }
 }
 
 async function joinHousehold() {
@@ -1422,47 +1499,44 @@ function renderList() {
 
   el.innerHTML = '';
   list.forEach((r, i) => {
-    const row = document.createElement('div');
-    row.className = 'recipe-row';
-    row.style.animationDelay = `${i*0.04}s`;
-    const thumb = r.image
-      ? `<div class="recipe-thumb"><img src="${r.image}" alt="" loading="lazy" onerror="this.parentNode.innerHTML='${r.emoji||'🍽'}'" /></div>`
-      : `<div class="recipe-thumb">${r.emoji||'🍽'}</div>`;
-    row.innerHTML = `${thumb}
+    const card = document.createElement('div');
+    card.className = 'recipe-card';
+    card.style.animationDelay = `${i*0.04}s`;
+    const thumbInner = r.image
+      ? `<img src="${r.image}" alt="" loading="lazy" onerror="this.parentNode.innerHTML='<span>${r.emoji||'🍽'}</span>'" />`
+      : `<span>${r.emoji||'🍽'}</span>`;
+    const metaBits = [r.cookTime ? r.cookTime.toUpperCase() : null, (r.categories||[])[0] || null].filter(Boolean).join(' · ');
+    card.innerHTML = `
+      <div class="recipe-thumb">
+        ${thumbInner}
+        <span class="fav-icon ${r.favourite?'active':''}" onclick="toggleFav(event,'${r.id}')">${r.favourite?'★':'☆'}</span>
+      </div>
       <div class="recipe-info">
         <div class="recipe-title">${r.title||'Untitled'}</div>
-        <div class="recipe-meta">
-          <span class="recipe-source">${r.source||'manual'}</span>
-          ${r.cookTime?`<span class="recipe-dot"></span><span class="recipe-time">${r.cookTime}</span>`:''}
-        </div>
-        ${(r.categories||[]).length?`<div class="recipe-tags">${r.categories.map(c=>`<span class="recipe-tag">${c}</span>`).join('')}</div>`:''}
-      </div>
-      <div style="flex-shrink:0">
-        <span class="fav-icon ${r.favourite?'active':''}" onclick="toggleFav(event,'${r.id}')">${r.favourite?'★':'☆'}</span>
+        ${metaBits ? `<div class="recipe-meta"><span class="recipe-time">${metaBits}</span></div>` : ''}
+        <div class="recipe-source">${r.source||'manual'}</div>
       </div>`;
-    row.addEventListener('click', () => openDetail(r.id));
-    el.appendChild(row);
+    card.addEventListener('click', () => openDetail(r.id));
+    el.appendChild(card);
   });
 }
 
 // ── TABS / FILTERS ─────────────────────────────────────────────────────────
-function setTab(tab, el) {
+function setTab(tab) {
   currentTab = tab;
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
+  document.querySelectorAll('[data-tab]').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
   document.getElementById('sectionTitle').textContent = {all:'↳ your collection',favourites:'↳ favourites',recent:'↳ recently added'}[tab];
   renderList();
 }
-function setFilter(f, el) {
+function setFilter(f) {
   currentFilter = f;
-  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
-  el.classList.add('active');
+  document.querySelectorAll('[data-filter]').forEach(c => c.classList.toggle('active', c.dataset.filter === f));
   renderList();
 }
 function toggleSearch() {
   searchVisible = !searchVisible;
   document.getElementById('searchWrap').style.display = searchVisible ? 'block' : 'none';
-  document.getElementById('searchToggle').classList.toggle('active', searchVisible);
+  document.querySelectorAll('.search-toggle-btn').forEach(b => b.classList.toggle('active', searchVisible));
   if (searchVisible) document.getElementById('searchInput').focus();
   else { document.getElementById('searchInput').value=''; renderList(); }
 }
@@ -1617,10 +1691,11 @@ function renderDetail(r) {
     <div class="detail-body">
       <div class="detail-kicker">↳ ${r.source||'manual entry'}</div>
       <div class="detail-title">${r.title}</div>
-      <div class="detail-stats">
-        <div class="detail-stat"><div class="detail-stat-val">${r.prepTime||'—'}</div><div class="detail-stat-label">Prep</div></div>
-        <div class="detail-stat"><div class="detail-stat-val">${r.cookTime||'—'}</div><div class="detail-stat-label">Cook</div></div>
-        <div class="detail-stat"><div class="detail-stat-val">${sv}</div><div class="detail-stat-label">Serves</div></div>
+      <div class="detail-chips">
+        ${r.prepTime ? `<span class="detail-chip">${r.prepTime} prep</span>` : ''}
+        ${r.cookTime ? `<span class="detail-chip">${r.cookTime} cook</span>` : ''}
+        <span class="detail-chip">${sv} serves</span>
+        ${(r.categories||[])[0] ? `<span class="detail-chip">${r.categories[0]}</span>` : ''}
       </div>
       <div class="servings-row">
         <span class="servings-label">Adjust servings</span>
@@ -1631,37 +1706,41 @@ function renderDetail(r) {
         </div>
       </div>
 
-      <div class="detail-tabs">
-        <div class="detail-tab active" onclick="switchDetailTab('ingredients',this)">Ingredients</div>
-        <div class="detail-tab" onclick="switchDetailTab('method',this)">Method</div>
-      </div>
+      <div class="detail-panes">
+        <div class="detail-tabs">
+          <div class="detail-tab active" onclick="switchDetailTab('ingredients',this)">Ingredients</div>
+          <div class="detail-tab" onclick="switchDetailTab('method',this)">Method</div>
+        </div>
 
-      <div id="tab-ingredients" class="detail-tab-content active">
-        ${(r.ingredients||[]).length ? `<div class="ingredient-list">${r.ingredients.map((ing,i)=>`
-          <div class="ingredient-row" id="ing_${r.id}_${i}" onclick="toggleIng('${r.id}',${i})">
-            <div class="ingredient-check" id="chk_${r.id}_${i}"></div>
-            <span class="ingredient-name">${ing.name}</span>
-            <span class="ingredient-amount">${scale(ing.amount)}</span>
-          </div>`).join('')}
-        </div>` : '<p style="color:var(--text-dim);font-size:13px;padding:8px 0">No ingredients listed.</p>'}
-      </div>
+        <div id="tab-ingredients" class="detail-tab-content active">
+          <div class="pane-header">Ingredients</div>
+          ${(r.ingredients||[]).length ? `<div class="ingredient-list">${r.ingredients.map((ing,i)=>`
+            <div class="ingredient-row" id="ing_${r.id}_${i}" onclick="toggleIng('${r.id}',${i})">
+              <div class="ingredient-check" id="chk_${r.id}_${i}"></div>
+              <span class="ingredient-name">${ing.name}</span>
+              <span class="ingredient-amount">${scale(ing.amount)}</span>
+            </div>`).join('')}
+          </div>` : '<p style="color:var(--text-dim);font-size:13px;padding:8px 0">No ingredients listed.</p>'}
+        </div>
 
-      <div id="tab-method" class="detail-tab-content">
-        ${(r.steps||[]).length ? `<div class="steps-list">${r.steps.map((s,i)=>`
-          <div class="step-item${i===0?' expanded active-step':''}" id="step_${r.id}_${i}">
-            <div class="step-header" onclick="toggleStep('${r.id}',${i})">
-              <div class="step-num" id="stepnum_${r.id}_${i}">${i+1}</div>
-              <div class="step-preview">${s.slice(0,55)}${s.length>55?'…':''}</div>
-              <div class="step-chevron">▾</div>
-            </div>
-            <div class="step-body">
-              ${linkIngredients(s, r.ingredients||[], r.id)}
-              <div style="margin-top:10px">
-                <button class="step-done-btn" onclick="markStepDone(event,'${r.id}',${i},${r.steps.length})">Mark done</button>
+        <div id="tab-method" class="detail-tab-content">
+          <div class="pane-header">Method</div>
+          ${(r.steps||[]).length ? `<div class="steps-list">${r.steps.map((s,i)=>`
+            <div class="step-item${i===0?' expanded active-step':''}" id="step_${r.id}_${i}">
+              <div class="step-header" onclick="toggleStep('${r.id}',${i})">
+                <div class="step-num" id="stepnum_${r.id}_${i}">${i+1}</div>
+                <div class="step-preview">${s.slice(0,55)}${s.length>55?'…':''}</div>
+                <div class="step-chevron">▾</div>
               </div>
-            </div>
-          </div>`).join('')}
-        </div>` : '<p style="color:var(--text-dim);font-size:13px;padding:8px 0">No method listed.</p>'}
+              <div class="step-body">
+                ${linkIngredients(s, r.ingredients||[], r.id)}
+                <div style="margin-top:10px">
+                  <button class="step-done-btn" onclick="markStepDone(event,'${r.id}',${i},${r.steps.length})">Mark done</button>
+                </div>
+              </div>
+            </div>`).join('')}
+          </div>` : '<p style="color:var(--text-dim);font-size:13px;padding:8px 0">No method listed.</p>'}
+        </div>
       </div>
 
       <div class="detail-actions">
