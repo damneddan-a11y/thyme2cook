@@ -333,6 +333,7 @@ body {
 }
 .fav-icon:hover { color: var(--accent); }
 .fav-icon.active { color: var(--accent); }
+.fav-icon.collection-icon { right: 44px; font-size: 13px; }
 
 /* ── FAB ── */
 .fab {
@@ -833,6 +834,8 @@ textarea.form-input { resize: vertical; min-height: 80px; }
 .leftover-match { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--accent-dim); }
 .picker-search { padding: 14px 20px 0; }
 #pickerOverlay { z-index: 450; }
+#collectionsOverlay { z-index: 460; }
+#collectionPickerOverlay { z-index: 470; }
 .picker-list { padding: 8px 20px 30px; max-height: 60vh; overflow-y: auto; }
 .picker-row { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--border); cursor: pointer; }
 .picker-row:hover .picker-row-title { color: var(--accent); }
@@ -899,7 +902,7 @@ textarea.form-input { resize: vertical; min-height: 80px; }
 
   .app-content { max-width: none; }
   .topbar .logo { display: none; }
-  .planner-btn-mobile, .theme-btn-mobile { display: none; }
+  .planner-btn-mobile, .theme-btn-mobile, .collections-btn-mobile { display: none; }
   .tabs-mobile, .filter-row-mobile { display: none; }
   .topbar { justify-content: flex-end; padding: 0 32px; height: 66px; }
   .section-header, .recipe-list, .search-wrap { padding-left: 32px; padding-right: 32px; }
@@ -998,6 +1001,11 @@ textarea.form-input { resize: vertical; min-height: 80px; }
       <div class="sidebar-item" data-filter="baking" onclick="setFilter('baking')">🥐 Baking</div>
       <div class="sidebar-item" data-filter="weekend" onclick="setFilter('weekend')">🕐 Weekend</div>
     </nav>
+    <div class="sidebar-label" style="display:flex;align-items:center;justify-content:space-between">
+      <span>Collections</span>
+      <span style="cursor:pointer;color:var(--accent);font-size:13px" onclick="openCollections()" title="Manage collections">+</span>
+    </div>
+    <nav class="sidebar-nav" id="sidebarCollectionsList"></nav>
     <div class="sidebar-spacer"></div>
     <div class="sidebar-item" onclick="openPlanner()">📅 Planner</div>
     <div class="sidebar-item theme-btn" onclick="toggleTheme()">Toggle theme</div>
@@ -1009,6 +1017,7 @@ textarea.form-input { resize: vertical; min-height: 80px; }
       <div class="logo">Thyme<span class="dot">2</span>Cook</div>
       <div class="topbar-actions" style="position:relative">
         <div class="icon-btn search-toggle-btn" onclick="toggleSearch()" title="Search">⌕</div>
+        <div class="icon-btn collections-btn-mobile" onclick="openCollections()" title="Collections">🗂</div>
         <div class="icon-btn planner-btn-mobile" onclick="openPlanner()" title="Planner">📅</div>
         <div class="icon-btn theme-btn theme-btn-mobile" onclick="toggleTheme()" title="Toggle theme"></div>
         <div class="account-btn" id="accountBtn" onclick="toggleAccountMenu()" title="Account">?</div>
@@ -1244,6 +1253,38 @@ textarea.form-input { resize: vertical; min-height: 80px; }
   </div>
 </div>
 
+<!-- COLLECTIONS SHEET -->
+<div class="overlay" id="collectionsOverlay" onclick="handleOverlayClick(event,'collectionsOverlay')">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-header">
+      <div class="sheet-title">Collections</div>
+      <div class="close-btn" onclick="closeSheet('collectionsOverlay')">×</div>
+    </div>
+    <div class="url-input-wrap">
+      <div class="url-input">
+        <span style="color:var(--text-dim)">🗂</span>
+        <input type="text" placeholder="New collection name…" id="newCollectionInput" onkeydown="if(event.key==='Enter')createCollection()" />
+      </div>
+    </div>
+    <button class="secondary-btn" onclick="createCollection()">+ Create collection</button>
+    <div class="picker-list" id="collectionsSheetList" style="padding-top:16px"></div>
+  </div>
+</div>
+
+<!-- ADD-TO-COLLECTION PICKER (per recipe) -->
+<div class="overlay" id="collectionPickerOverlay" onclick="handleOverlayClick(event,'collectionPickerOverlay')">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-header">
+      <div class="sheet-title">Add to collection</div>
+      <div class="close-btn" onclick="closeSheet('collectionPickerOverlay')">×</div>
+    </div>
+    <div class="picker-list" id="collectionPickerList" style="padding-top:16px"></div>
+    <button class="secondary-btn" onclick="closeSheet('collectionPickerOverlay');openCollections()">+ New collection</button>
+  </div>
+</div>
+
 <div class="loading-overlay" id="loadingOverlay">
   <div class="loading-spinner"></div>
   <div class="loading-text" id="loadingText">Fetching recipe…</div>
@@ -1265,6 +1306,9 @@ let searchVisible = false;
 let dbReady = false;
 let currentUser = null;
 let plannerData = { days: 7, entries: {} };
+let collectionsList = [];
+let currentCollection = null;
+let collectionPickerRecipeId = null;
 
 // ── THEME ──────────────────────────────────────────────────────────────────
 function getTheme()         { return localStorage.getItem('mep_theme') || 'dark'; }
@@ -1286,7 +1330,7 @@ document.addEventListener('click', e => {
   if (menu && menu.classList.contains('open') && !menu.contains(e.target) && !btn.contains(e.target)) menu.classList.remove('open');
 });
 
-let unsubscribeRecipes = null, unsubscribePlanner = null;
+let unsubscribeRecipes = null, unsubscribePlanner = null, unsubscribeCollections = null;
 let householdId = null;
 
 window.addEventListener('auth-changed', async e => {
@@ -1296,12 +1340,14 @@ window.addEventListener('auth-changed', async e => {
   householdId = null;
   if (unsubscribeRecipes) { unsubscribeRecipes(); unsubscribeRecipes = null; }
   if (unsubscribePlanner) { unsubscribePlanner(); unsubscribePlanner = null; }
+  if (unsubscribeCollections) { unsubscribeCollections(); unsubscribeCollections = null; }
 
   if (!user) {
     document.getElementById('authGate').style.display = 'flex';
     document.getElementById('onboardGate').style.display = 'none';
     document.getElementById('app').style.display = 'none';
     recipes = [];
+    collectionsList = [];
     return;
   }
 
@@ -1374,6 +1420,13 @@ function enterApp() {
   unsubscribePlanner = window._onSnapshot(pDoc, snap => {
     plannerData = snap.exists() ? { days: 7, entries: {}, ...snap.data() } : { days: 7, entries: {} };
     renderPlanner();
+  });
+
+  const cq = window._query(collectionsCol(), window._orderBy('createdAt', 'asc'));
+  unsubscribeCollections = window._onSnapshot(cq, snap => {
+    collectionsList = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderSidebarCollections();
+    if (document.getElementById('collectionsOverlay').classList.contains('open')) renderCollectionsSheet();
   });
 
   // keep a readable profile so other household members can see who's who
@@ -1472,10 +1525,125 @@ async function dbAdd(data)      { return window._addDoc(recipesCol(), data); }
 async function dbUpdate(id,data){ return window._updateDoc(window._doc(window._db,'households',householdId,'recipes',id), data); }
 async function dbDelete(id)     { return window._deleteDoc(window._doc(window._db,'households',householdId,'recipes',id)); }
 
+// ── COLLECTIONS ────────────────────────────────────────────────────────────
+function collectionsCol() { return window._collection(window._db, 'households', householdId, 'collections'); }
+
+function openCollections() {
+  document.getElementById('newCollectionInput').value = '';
+  renderCollectionsSheet();
+  document.getElementById('collectionsOverlay').classList.add('open');
+}
+
+function renderCollectionsSheet() {
+  const el = document.getElementById('collectionsSheetList');
+  if (!collectionsList.length) {
+    el.innerHTML = '<p style="color:var(--text-dim);font-size:13px;padding:8px 0">No collections yet — create one above.</p>';
+    return;
+  }
+  el.innerHTML = collectionsList.map(c => {
+    const count = recipes.filter(r => (r.collections||[]).includes(c.id)).length;
+    return `<div class="picker-row" style="justify-content:space-between">
+      <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0" onclick="filterByCollection('${c.id}','${(c.name||'').replace(/'/g,"")}')">
+        <div class="picker-row-title">${c.name}</div>
+      </div>
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-dim);flex-shrink:0;margin-right:8px">${count}</span>
+      <span class="planner-entry-remove" onclick="deleteCollection(event,'${c.id}','${(c.name||'').replace(/'/g,"")}')" title="Delete collection">🗑</span>
+    </div>`;
+  }).join('');
+}
+
+async function createCollection() {
+  const input = document.getElementById('newCollectionInput');
+  const name = input.value.trim();
+  if (!name) { showToast('Enter a collection name', 'error'); return; }
+  try {
+    await window._addDoc(collectionsCol(), { name, createdAt: Date.now() });
+    input.value = '';
+    showToast(`"${name}" created`, 'success');
+  } catch (err) {
+    showToast('Could not create collection', 'error');
+  }
+}
+
+async function deleteCollection(e, id, name) {
+  e.stopPropagation();
+  if (!confirm(`Delete the "${name}" collection? Recipes inside it won't be deleted, they'll just no longer be grouped here.`)) return;
+  try {
+    await window._deleteDoc(window._doc(window._db, 'households', householdId, 'collections', id));
+    if (currentCollection === id) { currentCollection = null; setTab('all'); }
+    showToast('Collection deleted', 'success');
+  } catch (err) {
+    showToast('Could not delete collection', 'error');
+  }
+}
+
+function filterByCollection(id, name) {
+  currentCollection = id;
+  currentTab = 'all';
+  currentFilter = 'all';
+  document.querySelectorAll('[data-tab]').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('[data-filter]').forEach(c => c.classList.remove('active'));
+  document.getElementById('sectionTitle').textContent = `↳ ${name}`;
+  closeSheet('collectionsOverlay');
+  renderList();
+  renderSidebarCollections();
+}
+
+function clearCollectionFilter() {
+  currentCollection = null;
+  setTab('all');
+}
+
+function renderSidebarCollections() {
+  const el = document.getElementById('sidebarCollectionsList');
+  if (!el) return;
+  if (!collectionsList.length) {
+    el.innerHTML = '<div style="font-size:12px;color:var(--text-dim);padding:6px 10px">No collections yet</div>';
+    return;
+  }
+  el.innerHTML = collectionsList.map(c => `
+    <div class="sidebar-item${currentCollection===c.id?' active':''}" onclick="filterByCollection('${c.id}','${(c.name||'').replace(/'/g,"")}')">${c.name}</div>
+  `).join('');
+}
+
+// ── ADD RECIPE TO COLLECTION ─────────────────────────────────────────────────
+function openCollectionPicker(e, recipeId) {
+  if (e) e.stopPropagation();
+  collectionPickerRecipeId = recipeId;
+  renderCollectionPicker();
+  document.getElementById('collectionPickerOverlay').classList.add('open');
+}
+
+function renderCollectionPicker() {
+  const el = document.getElementById('collectionPickerList');
+  const r = recipes.find(x => x.id === collectionPickerRecipeId);
+  const current = new Set((r && r.collections) || []);
+  if (!collectionsList.length) {
+    el.innerHTML = '<p style="color:var(--text-dim);font-size:13px;padding:8px 0">No collections yet. Create one first.</p>';
+    return;
+  }
+  el.innerHTML = collectionsList.map(c => `
+    <div class="picker-row" onclick="toggleRecipeCollection('${c.id}')">
+      <div class="ingredient-check${current.has(c.id)?' checked-static':''}" style="${current.has(c.id)?'background:var(--accent);border-color:var(--accent);color:var(--fab-text);':''}">${current.has(c.id)?'✓':''}</div>
+      <div class="picker-row-title">${c.name}</div>
+    </div>
+  `).join('');
+}
+
+async function toggleRecipeCollection(collectionId) {
+  const r = recipes.find(x => x.id === collectionPickerRecipeId);
+  if (!r) return;
+  const current = new Set((r.collections) || []);
+  if (current.has(collectionId)) current.delete(collectionId); else current.add(collectionId);
+  await dbUpdate(r.id, { collections: Array.from(current) });
+  renderCollectionPicker();
+}
+
 // ── RENDER ─────────────────────────────────────────────────────────────────
 function getFiltered() {
   let list = [...recipes];
   const q = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
+  if (currentCollection)           list = list.filter(r => (r.collections||[]).includes(currentCollection));
   if (currentTab === 'favourites') list = list.filter(r => r.favourite);
   if (currentTab === 'recent')     list = list.slice(0, 10);
   if (currentFilter !== 'all')     list = list.filter(r => (r.categories||[]).includes(currentFilter));
@@ -1510,6 +1678,7 @@ function renderList() {
       <div class="recipe-thumb">
         ${thumbInner}
         <span class="fav-icon ${r.favourite?'active':''}" onclick="toggleFav(event,'${r.id}')">${r.favourite?'★':'☆'}</span>
+        <span class="fav-icon collection-icon" onclick="openCollectionPicker(event,'${r.id}')" title="Add to collection">🗂</span>
       </div>
       <div class="recipe-info">
         <div class="recipe-title">${r.title||'Untitled'}</div>
@@ -1524,14 +1693,18 @@ function renderList() {
 // ── TABS / FILTERS ─────────────────────────────────────────────────────────
 function setTab(tab) {
   currentTab = tab;
+  currentCollection = null;
   document.querySelectorAll('[data-tab]').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
   document.getElementById('sectionTitle').textContent = {all:'↳ your collection',favourites:'↳ favourites',recent:'↳ recently added'}[tab];
   renderList();
+  renderSidebarCollections();
 }
 function setFilter(f) {
   currentFilter = f;
+  currentCollection = null;
   document.querySelectorAll('[data-filter]').forEach(c => c.classList.toggle('active', c.dataset.filter === f));
   renderList();
+  renderSidebarCollections();
 }
 function toggleSearch() {
   searchVisible = !searchVisible;
