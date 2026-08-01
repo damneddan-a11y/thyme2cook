@@ -283,6 +283,33 @@ body {
 .section-count {
   font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--accent-dim);
 }
+.sort-wrap { position: relative; display: flex; align-items: center; gap: 8px; }
+.sort-btn {
+  display: flex; align-items: center; gap: 3px;
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600;
+  letter-spacing: 0.06em; color: var(--text-mid);
+  background: var(--surface2); border: 1px solid var(--border2);
+  border-radius: 20px; padding: 4px 9px; cursor: pointer;
+  transition: all 0.15s !important;
+}
+.sort-btn:hover { border-color: var(--accent-dim); color: var(--text); }
+.sort-chevron { font-size: 8px; }
+.sort-menu {
+  position: absolute; top: 26px; right: 0; z-index: 150;
+  background: var(--surface2); border: 1px solid var(--border2); border-radius: 12px;
+  padding: 6px; min-width: 150px; box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+  opacity: 0; pointer-events: none; transform: translateY(-6px);
+  transition: all 0.15s !important;
+}
+.sort-menu.open { opacity: 1; pointer-events: all; transform: translateY(0); }
+.sort-menu-item {
+  padding: 8px 10px; font-size: 12px; color: var(--text); border-radius: 8px;
+  cursor: pointer; font-family: 'Space Grotesk', sans-serif; font-weight: 600;
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+}
+.sort-menu-item:hover { background: var(--surface3); }
+.sort-menu-item.active { color: var(--accent); }
+.sort-menu-item.active::after { content: '✓'; font-size: 10px; }
 
 /* ── RECIPE LIST ── */
 .recipe-list {
@@ -1053,7 +1080,18 @@ textarea.form-input { resize: vertical; min-height: 80px; }
 
     <div class="section-header">
       <span class="section-title" id="sectionTitle">↳ your collection</span>
-      <span class="section-count" id="sectionCount">— recipes</span>
+      <div class="sort-wrap">
+        <span class="section-count" id="sectionCount">— recipes</span>
+        <div class="sort-btn" id="sortBtn" onclick="toggleSortMenu()">
+          <span id="sortBtnLabel">A–Z</span><span class="sort-chevron">▾</span>
+        </div>
+        <div class="sort-menu" id="sortMenu">
+          <div class="sort-menu-item" data-sort="alpha-asc" onclick="setSort('alpha-asc')">A → Z</div>
+          <div class="sort-menu-item" data-sort="alpha-desc" onclick="setSort('alpha-desc')">Z → A</div>
+          <div class="sort-menu-item" data-sort="date-desc" onclick="setSort('date-desc')">Newest first</div>
+          <div class="sort-menu-item" data-sort="date-asc" onclick="setSort('date-asc')">Oldest first</div>
+        </div>
+      </div>
     </div>
 
     <div class="recipe-list" id="recipeList">
@@ -1298,6 +1336,7 @@ textarea.form-input { resize: vertical; min-height: 80px; }
 let recipes       = [];
 let currentTab    = 'all';
 let currentFilter = 'all';
+let currentSort   = 'alpha-asc';
 let currentServings = {};
 let activeRecipeId  = null;
 let chatHistory     = [];
@@ -1315,6 +1354,41 @@ function getTheme()         { return localStorage.getItem('mep_theme') || 'dark'
 function applyTheme(theme)  { document.documentElement.setAttribute('data-theme', theme); localStorage.setItem('mep_theme', theme); }
 function toggleTheme()      { applyTheme(getTheme() === 'dark' ? 'light' : 'dark'); }
 applyTheme(getTheme()); // apply on load before paint
+
+// ── SORT ───────────────────────────────────────────────────────────────────
+const SORT_LABELS = { 'alpha-asc': 'A–Z', 'alpha-desc': 'Z–A', 'date-desc': 'Newest', 'date-asc': 'Oldest' };
+function getSortPref() { return localStorage.getItem('mep_sort') || 'alpha-asc'; }
+function syncSortUI() {
+  document.getElementById('sortBtnLabel').textContent = SORT_LABELS[currentSort];
+  document.querySelectorAll('.sort-menu-item').forEach(el => el.classList.toggle('active', el.dataset.sort === currentSort));
+}
+function toggleSortMenu(force) {
+  const m = document.getElementById('sortMenu');
+  if (force === false) { m.classList.remove('open'); return; }
+  m.classList.toggle('open');
+}
+function setSort(sort) {
+  currentSort = sort;
+  localStorage.setItem('mep_sort', sort);
+  syncSortUI();
+  toggleSortMenu(false);
+  renderList();
+}
+function applySort(list) {
+  const sorted = [...list];
+  if (currentSort === 'alpha-asc')  sorted.sort((a,b) => (a.title||'').localeCompare(b.title||'', undefined, {sensitivity:'base'}));
+  if (currentSort === 'alpha-desc') sorted.sort((a,b) => (b.title||'').localeCompare(a.title||'', undefined, {sensitivity:'base'}));
+  if (currentSort === 'date-desc')  sorted.sort((a,b) => (b.addedAt||0) - (a.addedAt||0));
+  if (currentSort === 'date-asc')   sorted.sort((a,b) => (a.addedAt||0) - (b.addedAt||0));
+  return sorted;
+}
+currentSort = getSortPref();
+syncSortUI();
+document.addEventListener('click', e => {
+  const menu = document.getElementById('sortMenu');
+  const btn  = document.getElementById('sortBtn');
+  if (menu && menu.classList.contains('open') && !menu.contains(e.target) && !btn.contains(e.target)) menu.classList.remove('open');
+});
 
 // ── AUTH ───────────────────────────────────────────────────────────────────
 function doSignIn()  { window._signIn().catch(err => showToast(err.message || 'Sign in failed', 'error')); }
@@ -1652,7 +1726,7 @@ function getFiltered() {
     (r.source||'').toLowerCase().includes(q) ||
     (r.ingredients||[]).some(i => (i.name||'').toLowerCase().includes(q))
   );
-  return list;
+  return applySort(list);
 }
 
 function renderList() {
